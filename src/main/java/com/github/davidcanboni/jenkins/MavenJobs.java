@@ -96,15 +96,12 @@ public class MavenJobs {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
-
-        String[] branches = new String[]{"develop", "staging", "live"};
-
         // Loop through the matrix of combinations and set up the jobs:
         for (GitRepo gitRepo : GitRepo.values()) {
-            for (String branch : branches) {
+            for (Environment branch : Environment.values()) {
                 String name = gitRepo.name();
                 URL githubUrl = gitRepo.url;
-                create(name, githubUrl, branch);
+                create(name, githubUrl, branch.name());
             }
         }
 

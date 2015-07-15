@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,7 +21,7 @@ import java.util.List;
  */
 public class Jobs {
 
-    static Host jenkins = new Host(Environments.jenkins());
+    static Host jenkins = new Host(Environment.jenkins());
     static Endpoint createItem = new Endpoint(jenkins, "/createItem");
     static Endpoint jobs = new Endpoint(jenkins, "/api/json");
 
@@ -55,55 +54,6 @@ public class Jobs {
         }
     }
 
-    static Document buildJob(String name, String githubUrl, String branch) throws IOException {
-        Document result = null;
-
-
-        if (StringUtils.isNotBlank(name)) {
-            try (Http http = new Http()) {
-
-                String jobName = "Build " + name + " (" + branch + ")";
-
-                Document config;
-                if (!exists(jobName)) {
-
-                    System.out.println("Creating job " + jobName + " for " + name + "/" + branch + " at " + githubUrl);
-                    config = MavenJobs.forRepo(githubUrl, branch);
-
-                } else {
-
-                    System.out.println("Updating job " + jobName + " for " + name + "/" + branch + " at " + githubUrl);
-                    Endpoint configXml = new Endpoint(jenkins, "/job/" + jobName + "/config.xml");
-                    Response<Path> xml = http.get(configXml);
-                    if (xml.statusLine.getStatusCode() != 200)
-                        throw new RuntimeException("Error reading configuration for job " + jobName + ": " + xml.statusLine.getReasonPhrase());
-                    config = Xml.fromFile(xml.body);
-
-                }
-
-                // Configure the job
-                MavenJobs.forRepo(githubUrl, branch);
-                System.out.println("Configured job:");
-                System.out.println(Xml.toString(config));
-
-                // Post the config XML to update the job
-                http.addHeader("Content-Type", "application/xml");
-                System.out.println(Xml.toString(config));
-                Endpoint endpoint = createItem.setParameter("name", jobName);
-                Response<String> create = http.post(endpoint, config, String.class);
-                //Path temp = Xml.toFile(config);
-                //Response<String> create = http.post(createItem.setParameter("name", jobName), temp, String.class);
-                if (create.statusLine.getStatusCode() != 200) {
-                    System.out.println(create.body);
-                    throw new RuntimeException("Error setting configuration for job " + jobName + ": " + create.statusLine.getReasonPhrase());
-                }
-
-            }
-        }
-
-        return result;
-    }
-
     static Document getConfig(String jobName) throws IOException {
         Document result = null;
 
@@ -133,7 +83,12 @@ public class Jobs {
     }
 
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    /**
+     * Downloads the config.xml of each job on the Jenkins server.
+     * @param args Not used.
+     * @throws IOException If an error occurs in downloading the job configuration.
+     */
+    public static void main(String[] args) throws IOException {
 
         List<Item> jobs = listJobs();
 
@@ -144,25 +99,6 @@ public class Jobs {
             if (Files.exists(path)) Files.delete(path);
             Files.move(temp, path);
         }
-
-//        getConfig("Monitor Beta");
-//        System.exit(0);
-//
-//        String[] branches = new String[]{"develop", "staging", "live"};
-//        Map<String, String> projects = new HashMap<>();
-//        projects.put("Babbage", "https://github.com/ONSdigital/babbage.git");
-//        projects.put("Florence", "https://github.com/ONSdigital/florence.git");
-//        projects.put("Zebedee", "https://github.com/Carboni/zebedee.git");
-//        projects.put("Brian", "https://github.com/thomasridd/project-brian.git");
-//
-//        // Loop through the matrix of combinations and set up the jobs:
-//        for (Map.Entry<String, String> entry : projects.entrySet()) {
-//            for (String branch : branches) {
-//                String name = entry.getKey();
-//                String githubUrl = entry.getValue();
-//                buildJob(name, githubUrl, branch);
-//            }
-//        }
     }
 
     /**

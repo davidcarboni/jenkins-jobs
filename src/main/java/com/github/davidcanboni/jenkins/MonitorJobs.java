@@ -109,17 +109,17 @@ public class MonitorJobs  {
     public static void main(String[] args) throws IOException, URISyntaxException {
         Map<String, URL> monitors = new HashMap<>();
 
-        monitors.put("Website live", Environments.live.website());
-        monitors.put("Website staging", Environments.staging.website());
-        monitors.put("Website develop", Environments.develop.website());
+        monitors.put("Website live", Environment.live.website());
+        monitors.put("Website staging", Environment.staging.website());
+        monitors.put("Website develop", Environment.develop.website());
 
-        monitors.put("Publishing live", Environments.live.publishing());
-        monitors.put("Publishing staging", Environments.staging.publishing());
-        monitors.put("Publishing develop", Environments.develop.publishing());
+        monitors.put("Publishing live", Environment.live.publishing());
+        monitors.put("Publishing staging", Environment.staging.publishing());
+        monitors.put("Publishing develop", Environment.develop.publishing());
 
-        monitors.put("Jenkins", Environments.jenkins());
-        monitors.put("Registry", Environments.registry());
-        monitors.put("Nexus", Environments.nexus());
+        monitors.put("Jenkins", Environment.jenkins());
+        monitors.put("Registry", Environment.registry());
+        monitors.put("Nexus", Environment.nexus());
 
         for (Map.Entry<String, URL> entry : monitors.entrySet()) {
             String name = entry.getKey();
