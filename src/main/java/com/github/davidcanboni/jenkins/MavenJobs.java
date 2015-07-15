@@ -6,6 +6,7 @@ import com.github.onsdigital.http.Endpoint;
 import com.github.onsdigital.http.Http;
 import com.github.onsdigital.http.Response;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class MavenJobs {
             try (Http http = new Http()) {
 
                 http.addHeader("Content-Type", "application/xml");
-                String jobName = "Maven build " + branch + " " + name;
+                String jobName = "Maven " + WordUtils.capitalize(branch) + " " + WordUtils.capitalize(name);
                 Document config = forRepo(gitUrl, branch);
 
                 if (!Jobs.exists(jobName)) {
@@ -97,8 +98,8 @@ public class MavenJobs {
     public static void main(String[] args) throws IOException, URISyntaxException {
 
         // Loop through the matrix of combinations and set up the jobs:
-        for (GitRepo gitRepo : GitRepo.values()) {
-            for (Environment branch : Environment.values()) {
+        for (Environment branch : Environment.values()) {
+            for (GitRepo gitRepo : GitRepo.values()) {
                 String name = gitRepo.name();
                 URL githubUrl = gitRepo.url;
                 create(name, githubUrl, branch.name());
