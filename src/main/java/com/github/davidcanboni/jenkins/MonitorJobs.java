@@ -6,6 +6,7 @@ import com.github.onsdigital.http.Endpoint;
 import com.github.onsdigital.http.Http;
 import com.github.onsdigital.http.Response;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -109,17 +110,15 @@ public class MonitorJobs  {
     public static void main(String[] args) throws IOException, URISyntaxException {
         Map<String, URL> monitors = new HashMap<>();
 
-        monitors.put("Website live", Environment.live.website());
-        monitors.put("Website staging", Environment.staging.website());
-        monitors.put("Website develop", Environment.develop.website());
+        for (Environment environment : Environment.values()) {
 
-        monitors.put("Publishing live", Environment.live.publishing());
-        monitors.put("Publishing staging", Environment.staging.publishing());
-        monitors.put("Publishing develop", Environment.develop.publishing());
+            monitors.put(WordUtils.capitalize(environment.name())+" Website", environment.website());
+            monitors.put(WordUtils.capitalize(environment.name())+" Publishing", environment.publishing());
+        }
 
-        monitors.put("Jenkins", Environment.jenkins());
-        monitors.put("Registry", Environment.registry());
-        monitors.put("Nexus", Environment.nexus());
+        monitors.put("Build Jenkins", Environment.jenkins());
+        monitors.put("Build Registry", Environment.registry());
+        monitors.put("Build Nexus", Environment.nexus());
 
         for (Map.Entry<String, URL> entry : monitors.entrySet()) {
             String name = entry.getKey();
