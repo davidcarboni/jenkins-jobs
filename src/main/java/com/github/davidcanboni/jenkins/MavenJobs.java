@@ -10,21 +10,20 @@ import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URL;
 
 /**
  * Handles jobs in the Maven Build category.
  */
-public class MavenJobs  {
+public class MavenJobs {
 
-    public static Document forRepo(String gitUrl) throws IOException {
+    public static Document forRepo(URL gitUrl) throws IOException {
         Document document = getTemplate();
         setGitUrl(gitUrl, document);
         return document;
     }
 
-    public static Document forRepo(String gitUrl, String branch) throws IOException {
+    public static Document forRepo(URL gitUrl, String branch) throws IOException {
         Document document = getTemplate();
         setGitUrl(gitUrl, document);
         setBranch(branch, document);
@@ -35,8 +34,8 @@ public class MavenJobs  {
         return ResourceUtils.getXml(Templates.configMaven);
     }
 
-    private static void setGitUrl(String gitUrl, Document template) throws IOException {
-        Xml.setTextValue(template, "//hudson.plugins.git.UserRemoteConfig/url", gitUrl);
+    private static void setGitUrl(URL gitUrl, Document template) throws IOException {
+        Xml.setTextValue(template, "//hudson.plugins.git.UserRemoteConfig/url", gitUrl.toString());
     }
 
     private static void setBranch(String branch, Document template) throws IOException {
@@ -44,15 +43,13 @@ public class MavenJobs  {
     }
 
 
-
-
-    public static void create(String name, String gitUrl, String branch) throws IOException, URISyntaxException {
+    public static void create(String name, URL gitUrl, String branch) throws IOException, URISyntaxException {
 
         if (StringUtils.isNotBlank(name)) {
             try (Http http = new Http()) {
 
                 http.addHeader("Content-Type", "application/xml");
-                String jobName = "Maven build " + name;
+                String jobName = "Maven build " + branch + " " + name;
                 Document config = forRepo(gitUrl, branch);
 
                 if (!Jobs.exists(jobName)) {
@@ -60,20 +57,13 @@ public class MavenJobs  {
                     System.out.println("Creating Maven job " + jobName);
 
                     // Set the URL and create:
-                    create(jobName, config, http);
+                    //create(jobName, config, http);
 
                 } else {
 
                     System.out.println("Updating Maven job " + jobName);
                     Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
-//                    Response<Path> xml = http.get(endpoint);
-//                    if (xml.statusLine.getStatusCode() != 200)
-//                        throw new RuntimeException("Error reading configuration for job " + jobName + ": " + xml.statusLine.getReasonPhrase());
-//                    Document config = Xml.fromFile(xml.body);
-//
-//                    // Set the URL and update:
-//                    setImage(image, tag, config);
-                    update(jobName, config, http, endpoint);
+                    //update(jobName, config, http, endpoint);
 
                 }
 
@@ -105,20 +95,18 @@ public class MavenJobs  {
 
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        Map<String, String> images = new HashMap<>();
-        Map<String, String> tags = new HashMap<>();
 
-        images.put("Nginx", "nginx");
-        images.put("Jenkins", "jenkins");
-        images.put("Nexus", "nexus");
-        tags.put("Nexus", "oss");
-        images.put("Registry", "registry");
 
-        for (Map.Entry<String, String> entry : images.entrySet()) {
-            String name = entry.getKey();
-            String image = entry.getValue();
-            String tag = tags.get(name);
-            create(name, image, tag);
+        String[] branches = new String[]{"develop", "staging", "live"};
+
+        // Loop through the matrix of combinations and set up the jobs:
+        for (GitRepo gitRepo : GitRepo.values()) {
+            for (String branch : branches) {
+                String name = gitRepo.name();
+                URL githubUrl = gitRepo.url;
+                create(name, githubUrl, branch);
+            }
         }
+
     }
 }
