@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+    <actions/>
+    <description></description>
+    <logRotator class="hudson.tasks.LogRotator">
+        <daysToKeep>30</daysToKeep>
+        <numToKeep>-1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+    </logRotator>
+    <keepDependencies>false</keepDependencies>
+    <properties/>
+    <scm class="hudson.scm.NullSCM"/>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers>
+        <hudson.triggers.TimerTrigger>
+            <spec>H H * * *</spec>
+        </hudson.triggers.TimerTrigger>
+    </triggers>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.26">
+            <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PullImageCommand">
+                <dockerRegistryEndpoint plugin="docker-commons@1.1"/>
+                <fromImage>nginx</fromImage>
+                <tag></tag>
+                <registry></registry>
+            </dockerCmd>
+        </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+        <hudson.tasks.Shell>
+            <command>ssh ubuntu@carb.onl docker pull nginx</command>
+        </hudson.tasks.Shell>
+        <hudson.tasks.Shell>
+            <command>ssh ubuntu@carboni.uk docker pull nginx</command>
+        </hudson.tasks.Shell>
+    </builders>
+    <publishers/>
+    <buildWrappers/>
+</project>
