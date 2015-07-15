@@ -9,7 +9,7 @@ import java.net.URL;
 /**
  * Created by david on 15/07/2015.
  */
-public enum Stuff {
+public enum Environments {
 
     develop("http", "develop.carb.onl", true, "http", "develop.carboni.uk", true),
     staging("http", "develop.carb.onl", true, "http", "develop.carboni.uk", true),
@@ -98,7 +98,7 @@ public enum Stuff {
         }
     }
 
-    Stuff(String websiteProtocol, String websiteDomain, boolean websiteRequiresCredentials, String publishingProtocol, String publishingDomain, boolean publishingRequiresCredentials) {
+    Environments(String websiteProtocol, String websiteDomain, boolean websiteRequiresCredentials, String publishingProtocol, String publishingDomain, boolean publishingRequiresCredentials) {
         this.websiteProtocol = websiteProtocol;
         this.publishingProtocol = publishingProtocol;
         this.websiteDomain = websiteDomain;
