@@ -42,7 +42,7 @@ public class LibraryJobs  {
 
                 http.addHeader("Content-Type", "application/xml");
 
-                String jobName = "Docker library image " + name;
+                String jobName = "Docker image " + name;
                 String tagString = StringUtils.isNotBlank(tag)?":"+tag:"";
 
                 if (!Jobs.exists(jobName)) {
@@ -95,6 +95,12 @@ public class LibraryJobs  {
     }
 
 
+    /**
+     * TODO: Need to sort out the "execute shell" build steps.
+     * @param args
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     public static void main(String[] args) throws IOException, URISyntaxException {
         Map<String, String> images = new HashMap<>();
         Map<String, String> tags = new HashMap<>();
