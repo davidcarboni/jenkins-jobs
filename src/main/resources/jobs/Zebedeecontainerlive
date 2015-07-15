@@ -26,7 +26,7 @@
   <triggers>
     <jenkins.triggers.ReverseBuildTrigger>
       <spec/>
-      <upstreamProjects>Zebedee (live)</upstreamProjects>
+      <upstreamProjects>Maven Live Zebedee</upstreamProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>

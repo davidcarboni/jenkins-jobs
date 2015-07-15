@@ -26,7 +26,7 @@
   <triggers>
     <jenkins.triggers.ReverseBuildTrigger>
       <spec/>
-      <upstreamProjects>Brian (live)</upstreamProjects>
+      <upstreamProjects>Maven Live Brian</upstreamProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>
@@ -46,7 +46,7 @@
     </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.26">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
-        <dockerRegistryEndpoint plugin="docker-commons@1.0">
+        <dockerRegistryEndpoint plugin="docker-commons@1.1">
           <url>carboni.io</url>
           <credentialsId>4eaec77d-cbb1-48d1-92d4-dc2ffb52a399</credentialsId>
         </dockerRegistryEndpoint>
