@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Checks the behaviour of {@link MavenJobs}
@@ -17,27 +18,27 @@ public class MavenJobsTest {
     public void shouldSetUrl() throws IOException {
 
         // Given
-        String gitUrl = "Huzzah!";
+        URL gitUrl = new URL("http://example.com");
 
         // When
         Document document = MavenJobs.forRepo(gitUrl);
 
         // Then
-        Assert.assertEquals(gitUrl, getGitUrl(document));
+        Assert.assertEquals(gitUrl.toString(), getGitUrl(document));
     }
 
     @Test
     public void shouldSetUrlAndBranch() throws IOException {
 
         // Given
-        String gitUrl = "Cryptolite";
+        URL gitUrl = new URL("http://example.com");
         String branch = "Pooma";
 
         // When
         Document document = MavenJobs.forRepo(gitUrl, branch);
 
         // Then
-        Assert.assertEquals(gitUrl, getGitUrl(document));
+        Assert.assertEquals(gitUrl.toString(), getGitUrl(document));
         Assert.assertEquals(branch, getBranch(document));
     }
 
