@@ -82,6 +82,10 @@ public class Jobs {
         return result;
     }
 
+    static void rename() {
+        // /job/$CurrentJobName/doRename?newName=$NewJobName
+    }
+
 
     /**
      * Downloads the config.xml of each job on the Jenkins server.
