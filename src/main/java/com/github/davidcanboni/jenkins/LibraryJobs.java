@@ -31,7 +31,7 @@ public class LibraryJobs  {
     public static void setImage(String image, String tag, Document document) throws IOException, URISyntaxException {
         Xml.setTextValue(document, xpathImage, image);
         if (StringUtils.isNotBlank(tag))
-            Xml.setTextValue(document, xpathTag, image);
+            Xml.setTextValue(document, xpathTag, tag);
     }
 
 
@@ -101,7 +101,7 @@ public class LibraryJobs  {
 
         images.put("Nginx", "nginx");
         images.put("Jenkins", "jenkins");
-        images.put("Nexus", "nexus");
+        images.put("Nexus", "sonatype/nexus");
         tags.put("Nexus", "oss");
         images.put("Registry", "registry");
 
