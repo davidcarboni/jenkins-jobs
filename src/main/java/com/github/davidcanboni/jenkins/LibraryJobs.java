@@ -15,15 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by david on 09/07/2015.
+ * Handles jobs in the Docker Library Images category.
  */
-public class LibraryJobs extends Jobs {
+public class LibraryJobs  {
 
     static String xpathImage = "//builders/org.jenkinsci.plugins.dockerbuildstep.DockerBuilder/dockerCmd/fromImage";
     static String xpathTag = "//builders/org.jenkinsci.plugins.dockerbuildstep.DockerBuilder/dockerCmd/tag";
 
     public static Document setImage(String image, String tag) throws IOException, URISyntaxException {
-        Document document = ResourceUtils.getXml("/config-library.xml");
+        Document document = ResourceUtils.getXml(Templates.configLibrary);
         Xml.setTextValue(document, xpathImage, image);
         return document;
     }
@@ -45,7 +45,7 @@ public class LibraryJobs extends Jobs {
                 String jobName = "Docker library image " + name;
                 String tagString = StringUtils.isNotBlank(tag)?":"+tag:"";
 
-                if (!exists(jobName)) {
+                if (!Jobs.exists(jobName)) {
 
                     System.out.println("Creating job to pull library image " + name + " - " + image + tagString);
 
@@ -56,7 +56,7 @@ public class LibraryJobs extends Jobs {
                 } else {
 
                     System.out.println("Updating job to pull library image " + name + " - " + image + tagString);
-                    Endpoint endpoint = new Endpoint(jenkins, "/job/" + jobName + "/config.xml");
+                    Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
                     Response<Path> xml = http.get(endpoint);
                     if (xml.statusLine.getStatusCode() != 200)
                         throw new RuntimeException("Error reading configuration for job " + jobName + ": " + xml.statusLine.getReasonPhrase());
@@ -76,7 +76,7 @@ public class LibraryJobs extends Jobs {
 
 
         // Post the config XML to create the job
-        Endpoint endpoint = createItem.setParameter("name", jobName);
+        Endpoint endpoint = Jobs.createItem.setParameter("name", jobName);
         Response<String> create = http.post(endpoint, config, String.class);
         if (create.statusLine.getStatusCode() != 200) {
             System.out.println(create.body);

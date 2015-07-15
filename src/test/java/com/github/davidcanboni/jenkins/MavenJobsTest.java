@@ -43,7 +43,7 @@ public class MavenJobsTest {
 
 
     private static Document getTemplate() throws IOException {
-        return ResourceUtils.getXml("/config-maven.xml");
+        return ResourceUtils.getXml(Templates.configMaven);
     }
 
     private static String getGitUrl(Document template) throws IOException {

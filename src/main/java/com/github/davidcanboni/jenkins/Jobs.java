@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class Jobs {
 
-    static Host jenkins = new Host(Stuff.jenkins());
+    static Host jenkins = new Host(Environments.jenkins());
     static Endpoint createItem = new Endpoint(jenkins, "/createItem");
     static Endpoint jobs = new Endpoint(jenkins, "/api/json");
 

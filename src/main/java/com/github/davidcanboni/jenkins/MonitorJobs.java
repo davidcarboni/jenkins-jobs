@@ -20,12 +20,12 @@ import java.util.Map;
 /**
  * Handles jobs in the Monitoring category.
  */
-public class MonitorJobs extends Jobs {
+public class MonitorJobs  {
 
     static String xpath = "//hudson.model.StringParameterDefinition/defaultValue";
 
     public static Document setUrl(URL url) throws IOException, URISyntaxException {
-        Document document = ResourceUtils.getXml("/config-monitor.xml");
+        Document document = ResourceUtils.getXml(Templates.configMonitor);
         setUrl(url, document);
         return document;
     }
@@ -56,7 +56,7 @@ public class MonitorJobs extends Jobs {
 
                 String jobName = "Monitor " + name;
 
-                if (!exists(jobName)) {
+                if (!Jobs.exists(jobName)) {
 
                     System.out.println("Creating job to monitor " + name + " - " + host + password );
 
@@ -67,7 +67,7 @@ public class MonitorJobs extends Jobs {
                 } else {
 
                     System.out.println("Updating job to monitor " + name + " - " + host + password );
-                    Endpoint endpoint = new Endpoint(jenkins, "/job/" + jobName + "/config.xml");
+                    Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
                     Response<Path> xml = http.get(endpoint);
                     if (xml.statusLine.getStatusCode() != 200)
                         throw new RuntimeException("Error reading configuration for job " + jobName + ": " + xml.statusLine.getReasonPhrase());
@@ -87,7 +87,7 @@ public class MonitorJobs extends Jobs {
 
 
         // Post the config XML to create the job
-        Endpoint endpoint = createItem.setParameter("name", jobName);
+        Endpoint endpoint = Jobs.createItem.setParameter("name", jobName);
         Response<String> create = http.post(endpoint, config, String.class);
         if (create.statusLine.getStatusCode() != 200) {
             System.out.println(create.body);
@@ -109,17 +109,17 @@ public class MonitorJobs extends Jobs {
     public static void main(String[] args) throws IOException, URISyntaxException {
         Map<String, URL> monitors = new HashMap<>();
 
-        monitors.put("Website live", Stuff.live.website());
-        monitors.put("Website staging", Stuff.staging.website());
-        monitors.put("Website develop", Stuff.develop.website());
+        monitors.put("Website live", Environments.live.website());
+        monitors.put("Website staging", Environments.staging.website());
+        monitors.put("Website develop", Environments.develop.website());
 
-        monitors.put("Publishing live", Stuff.live.publishing());
-        monitors.put("Publishing staging", Stuff.staging.publishing());
-        monitors.put("Publishing develop", Stuff.develop.publishing());
+        monitors.put("Publishing live", Environments.live.publishing());
+        monitors.put("Publishing staging", Environments.staging.publishing());
+        monitors.put("Publishing develop", Environments.develop.publishing());
 
-        monitors.put("Jenkins", Stuff.jenkins());
-        monitors.put("Registry", Stuff.registry());
-        monitors.put("Nexus", Stuff.nexus());
+        monitors.put("Jenkins", Environments.jenkins());
+        monitors.put("Registry", Environments.registry());
+        monitors.put("Nexus", Environments.nexus());
 
         for (Map.Entry<String, URL> entry : monitors.entrySet()) {
             String name = entry.getKey();
