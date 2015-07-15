@@ -111,7 +111,6 @@ public class Jobs {
         if (StringUtils.isNotBlank(jobName)) {
             try (Http http = new Http()) {
 
-                Document config;
                 if (!exists(jobName)) {
 
                     System.out.println("Job " + jobName + " not found?");
@@ -123,7 +122,7 @@ public class Jobs {
                     Response<Path> xml = http.get(configXml);
                     if (xml.statusLine.getStatusCode() != 200)
                         throw new RuntimeException("Error reading configuration for job " + jobName + ": " + xml.statusLine.getReasonPhrase());
-                    config = Xml.fromFile(xml.body);
+                    result = Xml.fromFile(xml.body);
 
                 }
 
