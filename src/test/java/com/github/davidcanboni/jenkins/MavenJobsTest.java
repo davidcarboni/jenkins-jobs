@@ -1,5 +1,7 @@
 package com.github.davidcanboni.jenkins;
 
+import com.github.davidcanboni.jenkins.values.Environment;
+import com.github.davidcanboni.jenkins.values.GitRepo;
 import com.github.davidcanboni.jenkins.xml.Xml;
 import org.junit.Assert;
 import org.junit.Test;

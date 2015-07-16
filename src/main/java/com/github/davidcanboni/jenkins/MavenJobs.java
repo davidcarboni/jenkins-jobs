@@ -1,5 +1,8 @@
 package com.github.davidcanboni.jenkins;
 
+import com.github.davidcanboni.jenkins.values.Environment;
+import com.github.davidcanboni.jenkins.values.GitRepo;
+import com.github.davidcanboni.jenkins.values.JobCategory;
 import com.github.davidcanboni.jenkins.xml.Xml;
 import com.github.davidcarboni.ResourceUtils;
 import com.github.onsdigital.http.Endpoint;
@@ -69,7 +72,7 @@ public class MavenJobs {
     }
 
     public static String jobName(GitRepo gitRepo, Environment environment) {
-        return "Maven " + WordUtils.capitalize(environment.name()) + " " + WordUtils.capitalize(gitRepo.name());
+        return JobCategory.Maven + " " + WordUtils.capitalize(environment.name()) + " " + WordUtils.capitalize(gitRepo.name());
     }
 
     private static void create(String jobName, Document config, Http http) throws IOException {

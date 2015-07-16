@@ -2,6 +2,7 @@ package com.github.davidcanboni.jenkins;
 
 import com.github.davidcanboni.jenkins.json.Item;
 import com.github.davidcanboni.jenkins.json.Jenkins;
+import com.github.davidcanboni.jenkins.values.Environment;
 import com.github.davidcanboni.jenkins.xml.Xml;
 import com.github.onsdigital.http.Endpoint;
 import com.github.onsdigital.http.Host;

@@ -1,5 +1,7 @@
 package com.github.davidcanboni.jenkins;
 
+import com.github.davidcanboni.jenkins.values.Environment;
+import com.github.davidcanboni.jenkins.values.JobCategory;
 import com.github.davidcanboni.jenkins.xml.Xml;
 import com.github.davidcarboni.ResourceUtils;
 import com.github.onsdigital.http.Endpoint;
@@ -82,15 +84,15 @@ public class MonitorJobs {
     }
 
     public static String jobName(String name) {
-        return "Monitor " + name;
+        return JobCategory.Monitor + "  " + name;
     }
 
     public static String jobNameWebsite(Environment environment) {
-        return "Monitor Website " + environment.name();
+        return JobCategory.Monitor + " Website " + environment.name();
     }
 
     public static String jobNamePublishing(Environment environment) {
-        return "Monitor Publishing " + environment.name();
+        return JobCategory.Monitor + " Publishing " + environment.name();
     }
 
     private static void create(String jobName, Document config, Http http) throws IOException {
