@@ -7,7 +7,7 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>https://github.com/onsdigital/babbage.git</url>
+        <url>https://github.com/ONSdigital/babbage.git</url>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -42,10 +42,6 @@
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <hudson.tasks.Shell>
-      <command>#docker build --tag carboni.io/babbage:staging .
-curl http://docker:2375/info</command>
-    </hudson.tasks.Shell>
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.26">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand">
         <dockerFolder>$WORKSPACE</dockerFolder>
@@ -67,7 +63,7 @@ curl http://docker:2375/info</command>
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>Deploy publishing (staging)</childProjects>
+      <childProjects>Deploy website (staging), Deploy publishing (staging)</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>

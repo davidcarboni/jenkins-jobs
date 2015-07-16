@@ -17,7 +17,12 @@
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
     <submoduleCfg class="list"/>
-    <extensions/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.CloneOption>
+        <shallow>true</shallow>
+        <reference/>
+      </hudson.plugins.git.extensions.impl.CloneOption>
+    </extensions>
   </scm>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
@@ -58,7 +63,7 @@
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>Deploy publishing (staging)</childProjects>
+      <childProjects>Deploy website (staging), Deploy publishing (staging)</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>

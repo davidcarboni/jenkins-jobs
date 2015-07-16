@@ -7,7 +7,7 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <url>https://github.com/onsdigital/babbage.git</url>
+        <url>https://github.com/ONSdigital/babbage.git</url>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
@@ -63,7 +63,7 @@
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>Deploy publishing (live)</childProjects>
+      <childProjects>Deploy website (live), Deploy publishing (live)</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>
