@@ -85,7 +85,20 @@ public class Jobs {
         return result;
     }
 
-    static void rename() {
+    static void rename(String oldName, String newName) throws IOException {
+        if (exists(oldName)) {
+            Endpoint endpoint = new Endpoint(jenkins, "/job");
+            endpoint = endpoint.addPathSegment(oldName);
+            endpoint = endpoint.addPathSegment("doRename");
+            endpoint = endpoint.setParameter("newName", newName);
+            try (Http http = new Http()) {
+                http.post(endpoint, Object.class);
+            }
+            if (!exists(newName))
+                throw new RuntimeException("Job " + newName + " not found after rename.");
+        } else {
+            throw new RuntimeException("Job " + oldName + " does not exist.");
+        }
         // /job/$CurrentJobName/doRename?newName=$NewJobName
     }
 
