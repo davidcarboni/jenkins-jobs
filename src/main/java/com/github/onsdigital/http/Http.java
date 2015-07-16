@@ -282,8 +282,8 @@ public class Http implements AutoCloseable {
     /**
      * Sends a POST request with a file and returns the response.
      *
-     * @param endpoint      The endpoint to send the request to.
-     * @param file          The file to upload
+     * @param endpoint The endpoint to send the request to.
+     * @param file     The file to upload
      * @return A {@link Response} containing the deserialised body, if any.
      * @throws IOException If an error occurs.
      * @see MultipartEntityBuilder
@@ -408,6 +408,7 @@ public class Http implements AutoCloseable {
 
         return result;
     }
+
     /**
      * Serialises the given object as a {@link StringEntity}.
      *
@@ -460,7 +461,7 @@ public class Http implements AutoCloseable {
     /**
      * Deserialises the given {@link CloseableHttpResponse} to the specified type.
      *
-     * @param response      The response.
+     * @param response The response.
      * @return The response as a String, or null if the response does not contain an entity.
      * @throws IOException If an error occurs.
      */
