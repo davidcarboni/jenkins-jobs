@@ -42,7 +42,7 @@ public class LibraryJobs  {
 
                 http.addHeader("Content-Type", "application/xml");
 
-                String jobName = "Docker image " + name;
+                String jobName = "Docker library image " + name;
                 String tagString = StringUtils.isNotBlank(tag)?":"+tag:"";
 
                 if (!Jobs.exists(jobName)) {
@@ -110,6 +110,7 @@ public class LibraryJobs  {
         images.put("Nexus", "sonatype/nexus");
         tags.put("Nexus", "oss");
         images.put("Registry", "registry");
+        images.put("Elasticsearch", "elasticsearch");
 
         for (Map.Entry<String, String> entry : images.entrySet()) {
             String name = entry.getKey();
