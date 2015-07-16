@@ -1,4 +1,4 @@
-package com.github.davidcanboni.jenkins;
+package com.github.davidcanboni.jenkins.values;
 
 import org.apache.http.client.utils.URIBuilder;
 
@@ -48,49 +48,49 @@ public enum Environment {
     private boolean websiteRequiresCredentials;
     private boolean publishingRequiresCredentials;
 
-     URL website() {
+    public URL website() {
         if (website == null) {
             website = toUrl(websiteProtocol, websiteDomain, websiteRequiresCredentials);
         }
         return website;
     }
 
-     URL publishing() {
+    public URL publishing() {
         if (publishing == null) {
             publishing = toUrl(publishingProtocol, publishingDomain, publishingRequiresCredentials, publishingPath);
         }
         return publishing;
     }
 
-    static URL jenkins() {
+    public static URL jenkins() {
         if (jenkins == null) {
             jenkins = toUrl(jenkinsProtocol, jenkinsDomain, jenkinsRequiresCredentials);
         }
         return jenkins;
     }
 
-    static URL registry() {
+    public static URL registry() {
         if (registry == null) {
             registry = toUrl(registryProtocol, registryDomain, registryRequiresCredentials);
         }
         return registry;
     }
 
-    static URL nexus() {
+    public static URL nexus() {
         if (nexus == null) {
             nexus = toUrl(nexusProtocol, nexusDomain, nexusRequiresCredentials);
         }
         return nexus;
     }
 
-    private static URL toUrl(String protocol, String domain, boolean credentialsRequired, String... path) {
+    static URL toUrl(String protocol, String domain, boolean credentialsRequired, String... path) {
         try {
             URIBuilder builder = new URIBuilder();
             builder.setScheme(protocol);
             builder.setHost(domain);
             if (credentialsRequired)
                 builder.setUserInfo(username, password);
-            if (path.length>0)
+            if (path.length > 0)
                 builder.setPath(path[0]);
             return builder.build().toURL();
         } catch (URISyntaxException | MalformedURLException e) {

@@ -1,4 +1,4 @@
-package com.github.davidcanboni.jenkins;
+package com.github.davidcanboni.jenkins.values;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,7 +13,7 @@ public enum GitRepo {
     zebedee("https://github.com/Carboni/zebedee.git"),
     brian("https://github.com/thomasridd/project-brian.git");
 
-    URL url;
+    public URL url;
 
     GitRepo(String url) {
         try {
