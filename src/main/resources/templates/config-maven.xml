@@ -3,8 +3,8 @@
     <actions/>
     <description/>
     <logRotator class="hudson.tasks.LogRotator">
-        <daysToKeep>30</daysToKeep>
-        <numToKeep>-1</numToKeep>
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>100</numToKeep>
         <artifactDaysToKeep>-1</artifactDaysToKeep>
         <artifactNumToKeep>-1</artifactNumToKeep>
     </logRotator>
@@ -42,10 +42,6 @@
         </hudson.triggers.SCMTrigger>
     </triggers>
     <concurrentBuild>false</concurrentBuild>
-    <rootModule>
-        <groupId>com.github.onsdigital</groupId>
-        <artifactId>babbage</artifactId>
-    </rootModule>
     <aggregatorStyleBuild>true</aggregatorStyleBuild>
     <incrementalBuild>false</incrementalBuild>
     <ignoreUpstremChanges>false</ignoreUpstremChanges>
@@ -61,7 +57,17 @@
     <settings class="jenkins.mvn.DefaultSettingsProvider"/>
     <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
     <reporters/>
-    <publishers/>
+    <publishers>
+        <hudson.tasks.BuildTrigger>
+            <childProjects>Babbage container (develop)</childProjects>
+            <threshold>
+                <name>SUCCESS</name>
+                <ordinal>0</ordinal>
+                <color>BLUE</color>
+                <completeBuild>true</completeBuild>
+            </threshold>
+        </hudson.tasks.BuildTrigger>
+    </publishers>
     <buildWrappers/>
     <prebuilders/>
     <postbuilders/>
