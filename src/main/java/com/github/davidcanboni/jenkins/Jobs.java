@@ -15,6 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by david on 08/07/2015.
@@ -86,25 +89,6 @@ public class Jobs {
         // /job/$CurrentJobName/doRename?newName=$NewJobName
     }
 
-
-    /**
-     * Downloads the config.xml of each job on the Jenkins server.
-     * @param args Not used.
-     * @throws IOException If an error occurs in downloading the job configuration.
-     */
-    public static void main(String[] args) throws IOException {
-
-        List<Item> jobs = listJobs();
-
-        for (Item job : jobs) {
-            Document config = getConfig(job.name);
-            Path path = Paths.get("src/main/resources/jobs/" + sanitise(job.name));
-            Path temp = Xml.toFile(config);
-            if (Files.exists(path)) Files.delete(path);
-            Files.move(temp, path);
-        }
-    }
-
     /**
      * <a href=
      * "http://stackoverflow.com/questions/1155107/is-there-a-cross-platform-java-method-to-remove-filename-special-chars/13293384#13293384"
@@ -122,5 +106,42 @@ public class Jobs {
             }
         }
         return result.toString();
+    }
+
+
+    /**
+     * Downloads the config.xml of each job on the Jenkins server.
+     *
+     * @param args Not used.
+     * @throws IOException If an error occurs in downloading the job configuration.
+     */
+    public static void main(String[] args) throws IOException, InterruptedException {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+
+        List<Item> jobs = listJobs();
+
+        for (Item job : jobs) {
+            final Item referenceJob = job;
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        Document config = getConfig(referenceJob.name);
+                        Path path = Paths.get("src/main/resources/jobs/" + sanitise(referenceJob.name));
+                        Path temp = Xml.toFile(config);
+                        if (Files.exists(path)) Files.delete(path);
+                        Files.move(temp, path);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Error for " + referenceJob, e);
+                    }
+                }
+            });
+
+        }
+
+        executorService.shutdown();
+        executorService.awaitTermination(30, TimeUnit.SECONDS);
     }
 }
