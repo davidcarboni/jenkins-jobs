@@ -10,5 +10,6 @@ public class Templates {
     static String configDocker = templateFolder + "config-docker.xml";
     static String configLibrary = templateFolder + "config-library.xml";
     static String configMaven = templateFolder + "config-maven.xml";
+    static String configContainer = templateFolder + "config-container.xml";
     static String configMonitor = templateFolder + "config-monitor.xml";
 }
