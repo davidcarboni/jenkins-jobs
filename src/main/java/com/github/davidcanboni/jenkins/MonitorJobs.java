@@ -6,7 +6,6 @@ import com.github.onsdigital.http.Endpoint;
 import com.github.onsdigital.http.Http;
 import com.github.onsdigital.http.Response;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -21,7 +20,7 @@ import java.util.Map;
 /**
  * Handles jobs in the Monitoring category.
  */
-public class MonitorJobs  {
+public class MonitorJobs {
 
     static String xpath = "//hudson.model.StringParameterDefinition/defaultValue";
 
@@ -45,21 +44,19 @@ public class MonitorJobs  {
     }
 
 
-    public static void create(String name, URL url) throws IOException, URISyntaxException {
+    public static void create(String jobName, URL url) throws IOException, URISyntaxException {
 
-        String host = url.getHost()+url.getPath();
+        String host = url.getHost() + url.getPath();
         String password = StringUtils.isNotBlank(url.getUserInfo()) ? " (with password)" : "";
 
-        if (StringUtils.isNotBlank(name)) {
+        if (StringUtils.isNotBlank(jobName)) {
             try (Http http = new Http()) {
 
                 http.addHeader("Content-Type", "application/xml");
 
-                String jobName = "Monitor " + name;
-
                 if (!Jobs.exists(jobName)) {
 
-                    System.out.println("Creating job to monitor " + name + " - " + host + password );
+                    System.out.println("Creating job " + jobName + " - " + host + password);
 
                     // Set the URL and create:
                     Document config = setUrl(url);
@@ -67,7 +64,7 @@ public class MonitorJobs  {
 
                 } else {
 
-                    System.out.println("Updating job to monitor " + name + " - " + host + password );
+                    System.out.println("Updating job " + jobName + " - " + host + password);
                     Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
                     Response<Path> xml = http.get(endpoint);
                     if (xml.statusLine.getStatusCode() != 200)
@@ -82,6 +79,18 @@ public class MonitorJobs  {
 
             }
         }
+    }
+
+    public static String jobName(String name) {
+        return "Monitor " + name;
+    }
+
+    public static String jobNameWebsite(Environment environment) {
+        return "Monitor Website " + environment.name();
+    }
+
+    public static String jobNamePublishing(Environment environment) {
+        return "Monitor Publishing " + environment.name();
     }
 
     private static void create(String jobName, Document config, Http http) throws IOException {
@@ -111,14 +120,13 @@ public class MonitorJobs  {
         Map<String, URL> monitors = new HashMap<>();
 
         for (Environment environment : Environment.values()) {
-
-            monitors.put(WordUtils.capitalize(environment.name())+" Website", environment.website());
-            monitors.put(WordUtils.capitalize(environment.name())+" Publishing", environment.publishing());
+            monitors.put(jobNameWebsite(environment), environment.website());
+            monitors.put(jobNamePublishing(environment), environment.publishing());
         }
 
-        monitors.put("Build Jenkins", Environment.jenkins());
-        monitors.put("Build Registry", Environment.registry());
-        monitors.put("Build Nexus", Environment.nexus());
+        monitors.put(jobName("Jenkins"), Environment.jenkins());
+        monitors.put(jobName("Registry"), Environment.registry());
+        monitors.put(jobName("Nexus"), Environment.nexus());
 
         for (Map.Entry<String, URL> entry : monitors.entrySet()) {
             String name = entry.getKey();
