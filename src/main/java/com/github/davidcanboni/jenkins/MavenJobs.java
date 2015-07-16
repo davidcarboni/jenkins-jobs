@@ -5,7 +5,6 @@ import com.github.davidcarboni.ResourceUtils;
 import com.github.onsdigital.http.Endpoint;
 import com.github.onsdigital.http.Http;
 import com.github.onsdigital.http.Response;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.w3c.dom.Document;
 
@@ -18,16 +17,11 @@ import java.net.URL;
  */
 public class MavenJobs {
 
-    public static Document forRepo(URL gitUrl) throws IOException {
+    public static Document forRepo(GitRepo gitRepo, Environment environment) throws IOException {
         Document document = getTemplate();
-        setGitUrl(gitUrl, document);
-        return document;
-    }
-
-    public static Document forRepo(URL gitUrl, String branch) throws IOException {
-        Document document = getTemplate();
-        setGitUrl(gitUrl, document);
-        setBranch(branch, document);
+        setGitUrl(gitRepo.url, document);
+        setBranch(environment.name(), document);
+        setContainerJob(gitRepo, environment, document);
         return document;
     }
 
@@ -40,36 +34,42 @@ public class MavenJobs {
     }
 
     private static void setBranch(String branch, Document template) throws IOException {
-        Xml.setTextValue(template, "//hudson.plugins.git.BranchSpec/name", branch);
+        Xml.setTextValue(template, "//hudson.plugins.git.BranchSpec/name", "*/" + branch);
+    }
+
+    private static void setContainerJob(GitRepo gitRepo, Environment environment, Document template) throws IOException {
+        Xml.setTextValue(template, "//publishers/hudson.tasks.BuildTrigger/childProjects", ContainerJobs.jobName(gitRepo, environment));
     }
 
 
-    public static void create(String name, URL gitUrl, String branch) throws IOException, URISyntaxException {
+    public static void create(GitRepo gitRepo, Environment environment) throws IOException, URISyntaxException {
 
-        if (StringUtils.isNotBlank(name)) {
-            try (Http http = new Http()) {
+        try (Http http = new Http()) {
 
-                http.addHeader("Content-Type", "application/xml");
-                String jobName = "Maven " + WordUtils.capitalize(branch) + " " + WordUtils.capitalize(name);
-                Document config = forRepo(gitUrl, branch);
+            http.addHeader("Content-Type", "application/xml");
+            String jobName = jobName(gitRepo, environment);
+            Document config = forRepo(gitRepo, environment);
 
-                if (!Jobs.exists(jobName)) {
+            if (!Jobs.exists(jobName)) {
 
-                    System.out.println("Creating Maven job " + jobName);
+                System.out.println("Creating Maven job " + jobName);
 
-                    // Set the URL and create:
-                    //create(jobName, config, http);
+                // Set the URL and create:
+                create(jobName, config, http);
 
-                } else {
+            } else {
 
-                    System.out.println("Updating Maven job " + jobName);
-                    Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
-                    //update(jobName, config, http, endpoint);
-
-                }
+                System.out.println("Updating Maven job " + jobName);
+                Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
+                update(jobName, config, http, endpoint);
 
             }
+
         }
+    }
+
+    public static String jobName(GitRepo gitRepo, Environment environment) {
+        return "Maven " + WordUtils.capitalize(environment.name()) + " " + WordUtils.capitalize(gitRepo.name());
     }
 
     private static void create(String jobName, Document config, Http http) throws IOException {
@@ -98,11 +98,9 @@ public class MavenJobs {
     public static void main(String[] args) throws IOException, URISyntaxException {
 
         // Loop through the matrix of combinations and set up the jobs:
-        for (Environment branch : Environment.values()) {
+        for (Environment environment : Environment.values()) {
             for (GitRepo gitRepo : GitRepo.values()) {
-                String name = gitRepo.name();
-                URL githubUrl = gitRepo.url;
-                create(name, githubUrl, branch.name());
+                create(gitRepo, environment);
             }
         }
 

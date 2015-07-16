@@ -1,13 +1,11 @@
 package com.github.davidcanboni.jenkins;
 
 import com.github.davidcanboni.jenkins.xml.Xml;
-import com.github.davidcarboni.ResourceUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * Checks the behaviour of {@link MavenJobs}
@@ -18,33 +16,42 @@ public class MavenJobsTest {
     public void shouldSetUrl() throws IOException {
 
         // Given
-        URL gitUrl = new URL("http://example.com");
+        GitRepo repo = GitRepo.babbage;
+        Environment environment = Environment.live;
 
         // When
-        Document document = MavenJobs.forRepo(gitUrl);
+        Document document = MavenJobs.forRepo(repo, environment);
 
         // Then
-        Assert.assertEquals(gitUrl.toString(), getGitUrl(document));
+        Assert.assertEquals(repo.url.toString(), getGitUrl(document));
     }
 
     @Test
-    public void shouldSetUrlAndBranch() throws IOException {
+    public void shouldSetBranch() throws IOException {
 
         // Given
-        URL gitUrl = new URL("http://example.com");
-        String branch = "Pooma";
+        GitRepo repo = GitRepo.florence;
+        Environment environment = Environment.staging;
 
         // When
-        Document document = MavenJobs.forRepo(gitUrl, branch);
+        Document document = MavenJobs.forRepo(repo, environment);
 
         // Then
-        Assert.assertEquals(gitUrl.toString(), getGitUrl(document));
-        Assert.assertEquals(branch, getBranch(document));
+        Assert.assertEquals("*/" + environment.name(), getBranch(document));
     }
 
+    @Test
+    public void shouldSetContainerJob() throws IOException {
 
-    private static Document getTemplate() throws IOException {
-        return ResourceUtils.getXml(Templates.configMaven);
+        // Given
+        GitRepo repo = GitRepo.zebedee;
+        Environment environment = Environment.develop;
+
+        // When
+        Document document = MavenJobs.forRepo(repo, environment);
+
+        // Then
+        Assert.assertEquals(ContainerJobs.jobName(repo, environment), getContainerJob(document));
     }
 
     private static String getGitUrl(Document template) throws IOException {
@@ -53,5 +60,9 @@ public class MavenJobsTest {
 
     private static String getBranch(Document template) throws IOException {
         return Xml.getTextValue(template, "//hudson.plugins.git.BranchSpec/name");
+    }
+
+    private static String getContainerJob(Document template) throws IOException {
+        return Xml.getTextValue(template, "//publishers/hudson.tasks.BuildTrigger/childProjects");
     }
 }
