@@ -42,14 +42,37 @@
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.26">
+    <hudson.tasks.Maven>
+      <targets>clean package</targets>
+      <mavenName>(Default)</mavenName>
+      <usePrivateRepository>false</usePrivateRepository>
+      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+    </hudson.tasks.Maven>
+    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
+        <imageName>carboni.io/brian:develop_previous</imageName>
+        <imageId/>
+        <ignoreIfNotFound>true</ignoreIfNotFound>
+      </dockerCmd>
+    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand">
+        <image>carboni.io/brian:develop</image>
+        <repository>carboni.io</repository>
+        <tag>develop_previous</tag>
+        <ignoreIfNotFound>true</ignoreIfNotFound>
+      </dockerCmd>
+    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand">
         <dockerFolder>$WORKSPACE</dockerFolder>
         <imageTag>carboni.io/brian:develop</imageTag>
         <noCache>false</noCache>
+        <rm>false</rm>
       </dockerCmd>
     </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.26">
+    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
         <dockerRegistryEndpoint plugin="docker-commons@1.1">
           <url>carboni.io</url>
