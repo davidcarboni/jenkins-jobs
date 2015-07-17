@@ -32,6 +32,8 @@ public class ContainerJobs {
         setBranch(environment.name(), document);
         setUpstreamMavenBulid(gitRepo, environment, document);
         setDownstreamDeployJobs(environment, document);
+        removeImageCommand(gitRepo, environment, document);
+        tagImageCommand(gitRepo, environment, document);
         createImageCommand(gitRepo, environment, document);
         pushImageCommand(gitRepo, environment, document);
         return document;
@@ -59,6 +61,22 @@ public class ContainerJobs {
         Xml.setTextValue(template, "//publishers/hudson.tasks.BuildTrigger/childProjects", childProjects);
     }
     //Deploy publishing (develop), Deploy website (develop)
+
+    private static void removeImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
+        String registry = Environment.registry().getHost();
+        String image = gitRepo.name();
+        String tag = environment.name();
+        String imageTag = registry+"/"+image+":"+tag+"_previous";
+        Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand']/imageName", imageTag);
+    }
+
+    private static void tagImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
+        String registry = Environment.registry().getHost();
+        String image = gitRepo.name();
+        String tag = environment.name();
+        String imageTag = registry+"/"+image+":"+tag;
+        Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/image", imageTag);
+    }
 
     private static void createImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
         String registry = Environment.registry().getHost();
@@ -88,8 +106,6 @@ public class ContainerJobs {
             if (!Jobs.exists(jobName)) {
 
                 System.out.println("Creating Maven job " + jobName);
-
-                // Set the URL and create:
                 create(jobName, config, http);
 
             } else {
