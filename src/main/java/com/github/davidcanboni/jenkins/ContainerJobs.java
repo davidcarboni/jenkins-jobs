@@ -30,7 +30,6 @@ public class ContainerJobs {
         Document document = getTemplate();
         setGitUrl(gitRepo.url, document);
         setBranch(environment.name(), document);
-        setUpstreamMavenBulid(gitRepo, environment, document);
         setDownstreamDeployJobs(environment, document);
         removeImageCommand(gitRepo, environment, document);
         tagImageCommand(gitRepo, environment, document);
@@ -49,10 +48,6 @@ public class ContainerJobs {
 
     private static void setBranch(String branch, Document template) throws IOException {
         Xml.setTextValue(template, "//hudson.plugins.git.BranchSpec/name", "*/" + branch);
-    }
-
-    private static void setUpstreamMavenBulid(GitRepo gitRepo, Environment environment, Document template) {
-        Xml.setTextValue(template, "//jenkins.triggers.ReverseBuildTrigger/upstreamProjects", MavenJobs.jobName(gitRepo, environment));
     }
 
     private static void setDownstreamDeployJobs(Environment environment, Document template) throws IOException {
