@@ -58,7 +58,7 @@
     </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand">
-        <image>carboni.io/brian:develop</image>
+        <image>carboni.io/brian</image>
         <repository>carboni.io/brian</repository>
         <tag>develop_previous</tag>
         <ignoreIfNotFound>true</ignoreIfNotFound>
