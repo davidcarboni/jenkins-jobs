@@ -51,12 +51,12 @@ public class ContainerJobs {
         Xml.setTextValue(template, "//hudson.plugins.git.BranchSpec/name", "*/" + branch);
     }
 
-    private  static void setUpstreamMavenBulid(GitRepo gitRepo, Environment environment, Document template) {
-        Xml.setTextValue(template, "//jenkins.triggers.ReverseBuildTrigger/upstreamProjects",  MavenJobs.jobName(gitRepo, environment));
+    private static void setUpstreamMavenBulid(GitRepo gitRepo, Environment environment, Document template) {
+        Xml.setTextValue(template, "//jenkins.triggers.ReverseBuildTrigger/upstreamProjects", MavenJobs.jobName(gitRepo, environment));
     }
 
     private static void setDownstreamDeployJobs(Environment environment, Document template) throws IOException {
-        String[] jobNames = new String[]{DeployJobs.jobNameWebsite(environment),DeployJobs.jobNamePublishing(environment)};
+        String[] jobNames = new String[]{DeployJobs.jobNameWebsite(environment), DeployJobs.jobNamePublishing(environment)};
         String childProjects = StringUtils.join(jobNames, ", ");
         Xml.setTextValue(template, "//publishers/hudson.tasks.BuildTrigger/childProjects", childProjects);
     }
@@ -66,29 +66,31 @@ public class ContainerJobs {
         String registry = Environment.registry().getHost();
         String image = gitRepo.name();
         String tag = environment.name();
-        String imageTag = registry+"/"+image+":"+tag+"_previous";
+        String imageTag = registry + "/" + image + ":" + tag + "_previous";
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand']/imageName", imageTag);
     }
 
     private static void tagImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
         String registry = Environment.registry().getHost();
         String image = gitRepo.name();
-        String tag = environment.name();
-        String imageTag = registry+"/"+image+":"+tag;
-        Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/image", imageTag);
+        String tag = environment.name() + "_previous";
+        String imageName = registry + "/" + image;
+        Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/image", imageName);
+        Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/repository", imageName);
+        Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/tag", tag);
     }
 
     private static void createImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
         String registry = Environment.registry().getHost();
         String image = gitRepo.name();
         String tag = environment.name();
-        String imageTag = registry+"/"+image+":"+tag;
+        String imageTag = registry + "/" + image + ":" + tag;
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand']/imageTag", imageTag);
     }
 
     private static void pushImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
         String registry = Environment.registry().getHost();
-        String image = registry+"/"+gitRepo.name();
+        String image = registry + "/" + gitRepo.name();
         String tag = environment.name();
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand']/image", image);
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand']/tag", tag);
