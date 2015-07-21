@@ -36,9 +36,9 @@
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <hudson.tasks.Shell>
-      <command>npm install --prefix ./src/main/web/florence  --unsafe-perm</command>
-    </hudson.tasks.Shell>
+<hudson.tasks.Shell>
+<command>npm install --prefix ./src/main/web/florence  --unsafe-perm</command>
+</hudson.tasks.Shell>
     <hudson.tasks.Maven>
       <targets>clean package</targets>
       <mavenName>(Default)</mavenName>
