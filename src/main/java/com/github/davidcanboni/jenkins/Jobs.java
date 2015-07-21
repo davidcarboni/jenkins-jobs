@@ -9,6 +9,7 @@ import com.github.onsdigital.http.Host;
 import com.github.onsdigital.http.Http;
 import com.github.onsdigital.http.Response;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jetty.http.HttpStatus;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
@@ -51,6 +52,9 @@ public class Jobs {
         try (Http http = new Http()) {
             Response<Jenkins> jenkins = http.get(jobs, Jenkins.class);
             if (jenkins.statusLine.getStatusCode() != 200) {
+                if (jenkins.statusLine.getStatusCode() == HttpStatus.UNAUTHORIZED_401) {
+                    System.out.println("You may need to set VM options on your run configuration: -Dusername=user -Dpassword=pass");
+                }
                 throw new RuntimeException(jenkins.statusLine.getReasonPhrase());
             }
 
