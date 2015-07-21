@@ -40,7 +40,9 @@
 <command>npm install --prefix ./src/main/web/florence  --unsafe-perm</command>
 </hudson.tasks.Shell>
     <hudson.tasks.Maven>
-      <targets>clean package</targets>
+      <!-- The copy-dependencies goal is only actually needed for Babbage for the time being,
+      until it can go into a single JAR once ElasticSearch is no longer an embedded node. -->
+      <targets>clean package dependency:copy-dependencies</targets>
       <mavenName>(Default)</mavenName>
       <usePrivateRepository>false</usePrivateRepository>
       <settings class="jenkins.mvn.DefaultSettingsProvider"/>
