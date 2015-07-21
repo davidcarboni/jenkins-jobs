@@ -64,22 +64,22 @@ public class Xml {
         return document;
     }
 
-    public static boolean setTextValue(Document document, String xpathExpression, String value) {
-        boolean result = false;
+    public static Node getNode(Document document, String xpathExpression) {
 
         try {
             XPath xPath = XPathFactory.newInstance().newXPath();
             XPathExpression xPathExpression = xPath.compile(xpathExpression);
-            Node node = (Node) xPathExpression.evaluate(document, XPathConstants.NODE);
-            node.setTextContent(value);
-            result = true;
+            return (Node) xPathExpression.evaluate(document, XPathConstants.NODE);
         } catch (XPathExpressionException e) {
             throw new RuntimeException("Invalid xpath expression: " + xpathExpression);
         } catch (NullPointerException e) {
             throw new RuntimeException("No node found for: " + xpathExpression);
         }
+    }
 
-        return result;
+    public static void setTextValue(Document document, String xpathExpression, String value) {
+        Node node = getNode(document, xpathExpression);
+        node.setTextContent(value);
     }
 
     public static String getTextValue(Document document, String xpathExpression) {
