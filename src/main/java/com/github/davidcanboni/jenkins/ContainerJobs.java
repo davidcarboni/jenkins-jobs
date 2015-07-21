@@ -147,10 +147,8 @@ public class ContainerJobs {
 
         // Loop through the matrix of combinations and set up the jobs:
         for (Environment environment : Environment.values()) {
-            for (GitRepo gitRepo : GitRepo.values()) {
-                create(gitRepo, environment);
-            }
+            create(GitRepo.zebedee, environment);
+            create(GitRepo.brian, environment);
         }
-
     }
 }
