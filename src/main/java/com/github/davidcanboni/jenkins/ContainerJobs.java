@@ -143,6 +143,12 @@ public class ContainerJobs {
     }
 
 
+    /**
+     * TODO: registry credentials
+     * @param args
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     public static void main(String[] args) throws IOException, URISyntaxException {
 
         // Loop through the matrix of combinations and set up the jobs:
