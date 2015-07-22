@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- * Handles jobs in the Maven Build category.
+ * Handles jobs in Container Build category where there's a need for an "npm install" to process web files.
  */
 public class ContainerNodeJobs {
 
@@ -32,7 +32,7 @@ public class ContainerNodeJobs {
         setGitUrl(gitRepo.url, document);
         setBranch(environment.name(), document);
         setDownstreamDeployJobs(environment, document);
-        addNodeBuildStep(document);
+        addNodeBuildStep(document, gitRepo);
         removeImageCommand(gitRepo, environment, document);
         tagImageCommand(gitRepo, environment, document);
         createImageCommand(gitRepo, environment, document);
@@ -93,20 +93,25 @@ public class ContainerNodeJobs {
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand']/tag", tag);
     }
 
-    private static void addNodeBuildStep(Document template) {
+    private static void addNodeBuildStep(Document template, GitRepo gitRepo) {
 
         Node builders = Xml.getNode(template, "/project/builders");
 
         // Generate the additional nodes
         Node task = template.createElement("hudson.tasks.Shell");
         Node command = template.createElement("command");
-        Node text = template.createTextNode("npm install --prefix ./src/main/web/florence  --unsafe-perm");
+        Node text;
+        if (gitRepo == GitRepo.florence)
+            text = template.createTextNode("npm install --prefix ./src/main/web/florence  --unsafe-perm");
+        else
+            text = template.createTextNode("npm install --prefix ./src/main/web  --unsafe-perm");
 
         // Append nodes
         builders.insertBefore(task, builders.getFirstChild());
         task.appendChild(command);
         command.appendChild(text);
-        builders.normalize();;
+        builders.normalize();
+        ;
     }
 
 
