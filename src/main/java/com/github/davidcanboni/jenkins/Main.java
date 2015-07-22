@@ -17,7 +17,7 @@ public class Main {
         ContainerJobs.main(args);
         DeployJobs.main(args);
         LibraryJobs.main(args);
-        MavenNodeJobs.main(args);
+        ContainerNodeJobs.main(args);
         MonitorJobs.main(args);
         Jobs.main(args);
     }

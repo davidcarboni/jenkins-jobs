@@ -19,7 +19,7 @@ import java.net.URL;
 /**
  * Handles jobs in the Maven Build category.
  */
-public class MavenNodeJobs {
+public class ContainerNodeJobs {
 
     public static Document forRepo(URL gitUrl) throws IOException {
         Document document = getTemplate();
