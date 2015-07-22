@@ -100,12 +100,6 @@ public class MavenJobs {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
-        // Loop through the matrix of combinations and set up the jobs:
-        for (Environment environment : Environment.values()) {
-            for (GitRepo gitRepo : GitRepo.values()) {
-                create(gitRepo, environment);
-            }
-        }
-
+        // No Maven build jobs at the moment.
     }
 }
