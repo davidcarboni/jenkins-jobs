@@ -36,10 +36,12 @@
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <hudson.tasks.Shell>
-      <command>npm install --prefix ./src/main/web  --unsafe-perm</command>
-    </hudson.tasks.Shell>
+<hudson.tasks.Shell>
+<command>npm install --prefix ./src/main/web  --unsafe-perm</command>
+</hudson.tasks.Shell>
     <hudson.tasks.Maven>
+      <!-- The copy-dependencies goal is only actually needed for Babbage for the time being,
+      until it can go into a single JAR once ElasticSearch is no longer an embedded node. -->
       <targets>clean package dependency:copy-dependencies</targets>
       <mavenName>(Default)</mavenName>
       <usePrivateRepository>false</usePrivateRepository>
