@@ -49,15 +49,8 @@
       <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
     </hudson.tasks.Maven>
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
-      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
-        <imageName>carboni.io/florence:staging_previous</imageName>
-        <imageId/>
-        <ignoreIfNotFound>true</ignoreIfNotFound>
-      </dockerCmd>
-    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand">
-        <image>carboni.io/florence</image>
+        <image>carboni.io/florence:staging</image>
         <repository>carboni.io/florence</repository>
         <tag>staging_previous</tag>
         <ignoreIfNotFound>true</ignoreIfNotFound>
@@ -69,6 +62,13 @@
         <imageTag>carboni.io/florence:staging</imageTag>
         <noCache>false</noCache>
         <rm>false</rm>
+      </dockerCmd>
+    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
+        <imageName>carboni.io/florence:staging_previous</imageName>
+        <imageId/>
+        <ignoreIfNotFound>true</ignoreIfNotFound>
       </dockerCmd>
     </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
