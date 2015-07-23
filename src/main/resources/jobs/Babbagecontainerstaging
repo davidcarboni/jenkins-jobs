@@ -17,12 +17,7 @@
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
     <submoduleCfg class="list"/>
-    <extensions>
-      <hudson.plugins.git.extensions.impl.CloneOption>
-        <shallow>true</shallow>
-        <reference/>
-      </hudson.plugins.git.extensions.impl.CloneOption>
-    </extensions>
+    <extensions/>
   </scm>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
@@ -39,6 +34,9 @@
 <hudson.tasks.Shell>
 <command>npm install --prefix ./src/main/web  --unsafe-perm</command>
 </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>echo $GIT_COMMIT &gt; git_commit_id</command>
+    </hudson.tasks.Shell>
     <hudson.tasks.Maven>
       <!-- The copy-dependencies goal is only actually needed for Babbage for the time being,
       until it can go into a single JAR once ElasticSearch is no longer an embedded node. -->
