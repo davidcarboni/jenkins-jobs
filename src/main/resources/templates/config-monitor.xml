@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project>
+<?xml version="1.0" encoding="UTF-8"?><project>
     <actions/>
     <description/>
     <logRotator class="hudson.tasks.LogRotator">
@@ -15,7 +14,7 @@
                 <hudson.model.StringParameterDefinition>
                     <name>url</name>
                     <description>The URL to monitor.</description>
-                    <defaultValue>http://beta.ons.gov.uk/</defaultValue>
+                    <defaultValue>http://beta.ons.gov.uk</defaultValue>
                 </hudson.model.StringParameterDefinition>
             </parameterDefinitions>
         </hudson.model.ParametersDefinitionProperty>
@@ -38,12 +37,18 @@
                 echo "Response code: $code"
                 if [ "x$code" = "x200" ]
                 then
-                    exit 0
+                exit 0
                 else
-                    exit 1
+                exit 1
                 fi</command>
         </hudson.tasks.Shell>
     </builders>
-    <publishers/>
+    <publishers>
+        <hudson.tasks.Mailer plugin="mailer@1.15">
+            <recipients>david.carboni@methods.co.uk</recipients>
+            <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+            <sendToIndividuals>false</sendToIndividuals>
+        </hudson.tasks.Mailer>
+    </publishers>
     <buildWrappers/>
 </project>
