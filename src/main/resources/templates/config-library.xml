@@ -24,7 +24,7 @@
     <builders>
         <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.26">
             <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PullImageCommand">
-                <dockerRegistryEndpoint plugin="docker-commons@1.1"/>
+                <dockerRegistryEndpoint plugin="docker-commons@1.2"/>
                 <fromImage>nginx</fromImage>
                 <tag></tag>
                 <registry></registry>

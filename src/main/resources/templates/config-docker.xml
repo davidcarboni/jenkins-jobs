@@ -3,8 +3,26 @@
     <actions/>
     <description></description>
     <keepDependencies>false</keepDependencies>
-    <properties/>
-    <scm class="hudson.plugins.git.GitSCM" plugin="git@2.3.5">
+    <properties>
+        <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
+            <teamDomain/>
+            <token/>
+            <room/>
+            <startNotification>false</startNotification>
+            <notifySuccess>false</notifySuccess>
+            <notifyAborted>false</notifyAborted>
+            <notifyNotBuilt>false</notifyNotBuilt>
+            <notifyUnstable>false</notifyUnstable>
+            <notifyFailure>true</notifyFailure>
+            <notifyBackToNormal>false</notifyBackToNormal>
+            <notifyRepeatedFailure>false</notifyRepeatedFailure>
+            <includeTestSummary>false</includeTestSummary>
+            <showCommitList>false</showCommitList>
+            <includeCustomMessage>false</includeCustomMessage>
+            <customMessage/>
+        </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    </properties>
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
         <configVersion>2</configVersion>
         <userRemoteConfigs>
             <hudson.plugins.git.UserRemoteConfig>
@@ -52,13 +70,13 @@
         </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
         <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.26">
             <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
-                <dockerRegistryEndpoint plugin="docker-commons@1.1">
+                <dockerRegistryEndpoint plugin="docker-commons@1.2">
                     <url>carboni.io</url>
                     <credentialsId>4eaec77d-cbb1-48d1-92d4-dc2ffb52a399</credentialsId>
                 </dockerRegistryEndpoint>
                 <image>carboni.io/babbage</image>
                 <tag>develop</tag>
-                <registry></registry>
+                <registry/>
             </dockerCmd>
         </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
     </builders>
@@ -72,6 +90,12 @@
                 <completeBuild>true</completeBuild>
             </threshold>
         </hudson.tasks.BuildTrigger>
+        <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
+            <teamDomain>onsbeta</teamDomain>
+            <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
+            <buildServerUrl>http://jenkins.carboni.uk/</buildServerUrl>
+            <room/>
+        </jenkins.plugins.slack.SlackNotifier>
     </publishers>
     <buildWrappers/>
 </project>
