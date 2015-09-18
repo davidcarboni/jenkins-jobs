@@ -49,19 +49,28 @@
   </triggers>
   <concurrentBuild>false</concurrentBuild>
   <builders>
-    <hudson.tasks.Shell>
-      <command>npm install --prefix ./src/main/web/florence  --unsafe-perm</command>
-    </hudson.tasks.Shell>
+<hudson.tasks.Shell>
+<command>npm install --prefix ./src/main/web/florence  --unsafe-perm</command>
+</hudson.tasks.Shell>
     <hudson.tasks.Shell>
       <command>echo $GIT_COMMIT &gt; git_commit_id</command>
     </hudson.tasks.Shell>
     <hudson.tasks.Maven>
+      <!-- The copy-dependencies goal is only actually needed for Babbage for the time being,
+      until it can go into a single JAR once ElasticSearch is no longer an embedded node. -->
       <targets>clean package dependency:copy-dependencies</targets>
       <mavenName>(Default)</mavenName>
       <usePrivateRepository>false</usePrivateRepository>
       <settings class="jenkins.mvn.DefaultSettingsProvider"/>
       <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
     </hudson.tasks.Maven>
+    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
+        <imageName>carboni.io/florence:develop_previous</imageName>
+        <imageId/>
+        <ignoreIfNotFound>true</ignoreIfNotFound>
+      </dockerCmd>
+    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand">
         <image>carboni.io/florence:develop</image>
@@ -99,7 +108,7 @@
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>Deploy website (develop),Deploy publishing (develop)</childProjects>
+      <childProjects>Deploy website (develop), Deploy publishing (develop)</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>
