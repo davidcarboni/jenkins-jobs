@@ -1,38 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?><project>
-    <actions/>
-    <description/>
-    <logRotator class="hudson.tasks.LogRotator">
-        <daysToKeep>7</daysToKeep>
-        <numToKeep>-1</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
-    </logRotator>
-    <keepDependencies>false</keepDependencies>
-    <properties>
-        <hudson.model.ParametersDefinitionProperty>
-            <parameterDefinitions>
-                <hudson.model.StringParameterDefinition>
-                    <name>url</name>
-                    <description>The URL to monitor.</description>
-                    <defaultValue>http://stats:Magic5yf&amp;Roundabout@publishing.beta.ons.gov.uk/florence/index.html</defaultValue>
-                </hudson.model.StringParameterDefinition>
-            </parameterDefinitions>
-        </hudson.model.ParametersDefinitionProperty>
-    </properties>
-    <scm class="hudson.scm.NullSCM"/>
-    <canRoam>true</canRoam>
-    <disabled>false</disabled>
-    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-    <triggers>
-        <hudson.triggers.TimerTrigger>
-            <spec>* * * * *</spec>
-        </hudson.triggers.TimerTrigger>
-    </triggers>
-    <concurrentBuild>false</concurrentBuild>
-    <builders>
-        <hudson.tasks.Shell>
-            <command>echo Pinging $url
+  <actions/>
+  <description/>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>7</daysToKeep>
+    <numToKeep>-1</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>url</name>
+          <description>The URL to monitor.</description>
+          <defaultValue>http://stats:Magic5yf&amp;Roundabout@publishing.beta.ons.gov.uk/florence/index.html</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
+      <teamDomain/>
+      <token/>
+      <room/>
+      <startNotification>false</startNotification>
+      <notifySuccess>false</notifySuccess>
+      <notifyAborted>false</notifyAborted>
+      <notifyNotBuilt>false</notifyNotBuilt>
+      <notifyUnstable>false</notifyUnstable>
+      <notifyFailure>true</notifyFailure>
+      <notifyBackToNormal>false</notifyBackToNormal>
+      <notifyRepeatedFailure>false</notifyRepeatedFailure>
+      <includeTestSummary>false</includeTestSummary>
+      <showCommitList>false</showCommitList>
+      <includeCustomMessage>false</includeCustomMessage>
+      <customMessage/>
+    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <hudson.triggers.TimerTrigger>
+      <spec>* * * * *</spec>
+    </hudson.triggers.TimerTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>echo Pinging $url
                 code=`curl -sL -w "%{http_code}\\n" "$url" -o /dev/null`
                 echo "Response code: $code"
                 if [ "x$code" = "x200" ]
@@ -41,8 +58,15 @@
                 else
                     exit 1
                 fi</command>
-        </hudson.tasks.Shell>
-    </builders>
-    <publishers/>
-    <buildWrappers/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
+      <teamDomain>onsbeta</teamDomain>
+      <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
+      <buildServerUrl>http://jenkins.carboni.uk/</buildServerUrl>
+      <room/>
+    </jenkins.plugins.slack.SlackNotifier>
+  </publishers>
+  <buildWrappers/>
 </project>
