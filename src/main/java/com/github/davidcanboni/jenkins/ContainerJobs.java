@@ -155,6 +155,7 @@ public class ContainerJobs {
         for (Environment environment : Environment.values()) {
             create(GitRepo.zebedee, environment);
             create(GitRepo.brian, environment);
+            create(GitRepo.thetrain, environment);
         }
     }
 }

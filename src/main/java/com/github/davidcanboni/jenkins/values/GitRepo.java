@@ -11,7 +11,8 @@ public enum GitRepo {
     babbage("https://github.com/ONSdigital/babbage.git"),
     florence("https://github.com/ONSdigital/florence.git"),
     zebedee("https://github.com/Carboni/zebedee.git"),
-    brian("https://github.com/thomasridd/project-brian.git");
+    brian("https://github.com/thomasridd/project-brian.git"),
+    thetrain("https://github.com/Carboni/The-Train.git");
 
     public URL url;
 
