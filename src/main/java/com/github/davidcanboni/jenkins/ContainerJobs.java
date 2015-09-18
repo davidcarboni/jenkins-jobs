@@ -62,7 +62,7 @@ public class ContainerJobs {
         String image = gitRepo.name();
         String tag = environment.name();
         String imageTag = registry + "/" + image + ":" + tag + "_previous";
-        Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand']/imageName", imageTag);
+        Xml.setTextValues(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand']/imageName", imageTag);
     }
 
     private static void tagImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {

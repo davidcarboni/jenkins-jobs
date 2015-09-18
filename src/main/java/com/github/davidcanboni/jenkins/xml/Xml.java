@@ -2,6 +2,7 @@ package com.github.davidcanboni.jenkins.xml;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -77,9 +78,29 @@ public class Xml {
         }
     }
 
+    public static NodeList getNodes(Document document, String xpathExpression) {
+
+        try {
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            XPathExpression xPathExpression = xPath.compile(xpathExpression);
+            return (NodeList) xPathExpression.evaluate(document, XPathConstants.NODESET);
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("Invalid xpath expression: " + xpathExpression);
+        } catch (NullPointerException e) {
+            throw new RuntimeException("No node found for: " + xpathExpression);
+        }
+    }
+
     public static void setTextValue(Document document, String xpathExpression, String value) {
         Node node = getNode(document, xpathExpression);
         node.setTextContent(value);
+    }
+
+    public static void setTextValues(Document document, String xpathExpression, String value) {
+        NodeList nodes = getNodes(document, xpathExpression);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            nodes.item(i).setTextContent(value);
+        }
     }
 
     public static String getTextValue(Document document, String xpathExpression) {
