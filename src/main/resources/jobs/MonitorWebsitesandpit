@@ -14,7 +14,7 @@
                 <hudson.model.StringParameterDefinition>
                     <name>url</name>
                     <description>The URL to monitor.</description>
-                    <defaultValue>http://sandpit.carb.onl</defaultValue>
+                    <defaultValue>http://stats:Magic5yf&amp;Roundabout@sandpit.carb.onl</defaultValue>
                 </hudson.model.StringParameterDefinition>
             </parameterDefinitions>
         </hudson.model.ParametersDefinitionProperty>

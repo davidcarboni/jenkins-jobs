@@ -14,7 +14,7 @@ public enum Environment {
     develop("http", "develop.carb.onl", true, "http", "develop.carboni.uk", true),
     staging("http", "develop.carb.onl", true, "http", "develop.carboni.uk", true),
     live("http", "beta.ons.gov.uk", false, "http", "publishing.beta.ons.gov.uk", true),
-    sandpit("http", "sandpit.carb.onl", false, "http", "publishing.sandpit.carboni.uk", true);
+    sandpit("http", "sandpit.carb.onl", true, "http", "publishing.sandpit.carboni.uk", true);
     public static String registryRepo = "carboni";
 
     // Cross-environment URLs:
