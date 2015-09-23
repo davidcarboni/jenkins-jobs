@@ -94,7 +94,7 @@
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
         <dockerRegistryEndpoint plugin="docker-commons@1.2">
-          <url>carboni.io</url>
+          <url>https://index.docker.io/v1/</url>
           <credentialsId>453e925a-4b00-49ca-b659-fe10254c19e0</credentialsId>
         </dockerRegistryEndpoint>
         <image>carboni.io/babbage</image>
