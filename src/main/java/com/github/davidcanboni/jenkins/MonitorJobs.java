@@ -127,7 +127,8 @@ public class MonitorJobs {
         }
 
         monitors.put(jobName("Jenkins"), Environment.jenkins());
-        monitors.put(jobName("Registry"), Environment.registry());
+        // Unlikely we need to monitor Docker Hub
+        //monitors.put(jobName("Registry"), Environment.registry());
         monitors.put(jobName("Nexus"), Environment.nexus());
 
         for (Map.Entry<String, URL> entry : monitors.entrySet()) {
