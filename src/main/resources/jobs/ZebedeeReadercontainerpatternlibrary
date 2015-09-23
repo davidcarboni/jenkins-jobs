@@ -50,7 +50,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>echo $GIT_COMMIT &gt; zebedee-reader/git_commit_id</command>
+      <command>echo $GIT_COMMIT on branch $GIT_BRANCH at $GIT_URL &gt; git_commit_id</command>
     </hudson.tasks.Shell>
     <hudson.tasks.Maven>
       <targets>clean package dependency:copy-dependencies</targets>
@@ -61,15 +61,15 @@
     </hudson.tasks.Maven>
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
-        <imageName>carboni.io/zebedee-reader:pattern-library_previous</imageName>
+        <imageName>carboni/zebedee-reader:pattern-library_previous</imageName>
         <imageId/>
         <ignoreIfNotFound>true</ignoreIfNotFound>
       </dockerCmd>
     </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand">
-        <image>carboni.io/zebedee-reader:pattern-library</image>
-        <repository>carboni.io/zebedee-reader</repository>
+        <image>carboni/zebedee-reader:pattern-library</image>
+        <repository>carboni/zebedee-reader</repository>
         <tag>pattern-library_previous</tag>
         <ignoreIfNotFound>true</ignoreIfNotFound>
       </dockerCmd>
@@ -77,14 +77,14 @@
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand">
         <dockerFolder>$WORKSPACE/zebedee-reader</dockerFolder>
-        <imageTag>carboni.io/zebedee-reader:pattern-library</imageTag>
+        <imageTag>carboni/zebedee-reader:pattern-library</imageTag>
         <noCache>false</noCache>
         <rm>false</rm>
       </dockerCmd>
     </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
-        <imageName>carboni.io/zebedee-reader:pattern-library_previous</imageName>
+        <imageName>carboni/zebedee-reader:pattern-library_previous</imageName>
         <imageId/>
         <ignoreIfNotFound>true</ignoreIfNotFound>
       </dockerCmd>
@@ -92,10 +92,10 @@
     <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
         <dockerRegistryEndpoint plugin="docker-commons@1.2">
-          <url>carboni.io</url>
-          <credentialsId>4eaec77d-cbb1-48d1-92d4-dc2ffb52a399</credentialsId>
+          <url>https://index.docker.io/v1/</url>
+          <credentialsId>453e925a-4b00-49ca-b659-fe10254c19e0</credentialsId>
         </dockerRegistryEndpoint>
-        <image>carboni.io/zebedee-reader</image>
+        <image>carboni/zebedee-reader</image>
         <tag>pattern-library</tag>
         <registry/>
       </dockerCmd>
