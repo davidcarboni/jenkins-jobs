@@ -50,7 +50,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>echo $GIT_COMMIT &gt; git_commit_id</command>
+      <command>echo $GIT_COMMIT on branch $GIT_BRANCH at $GIT_URL &gt; git_commit_id</command>
     </hudson.tasks.Shell>
     <hudson.tasks.Maven>
       <!-- The copy-dependencies goal is only actually needed for Babbage for the time being,
