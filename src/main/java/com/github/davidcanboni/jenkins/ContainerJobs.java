@@ -58,7 +58,7 @@ public class ContainerJobs {
     //Deploy publishing (develop), Deploy website (develop)
 
     private static void removeImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
-        String registry = Environment.registry().getHost();
+        String registry = Environment.registryRepo;
         String image = gitRepo.name();
         String tag = environment.name();
         String imageTag = registry + "/" + image + ":" + tag + "_previous";
@@ -66,7 +66,7 @@ public class ContainerJobs {
     }
 
     private static void tagImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
-        String registry = Environment.registry().getHost();
+        String registry = Environment.registryRepo;
         String image = gitRepo.name();
         String tag = environment.name() + "_previous";
         String imageName = registry + "/" + image;
@@ -76,7 +76,7 @@ public class ContainerJobs {
     }
 
     private static void createImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
-        String registry = Environment.registry().getHost();
+        String registry = Environment.registryRepo;
         String image = gitRepo.name();
         String tag = environment.name();
         String imageTag = registry + "/" + image + ":" + tag;
@@ -84,7 +84,7 @@ public class ContainerJobs {
     }
 
     private static void pushImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
-        String registry = Environment.registry().getHost();
+        String registry = Environment.registryRepo;
         String image = registry + "/" + gitRepo.name();
         String tag = environment.name();
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand']/image", image);

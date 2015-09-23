@@ -15,6 +15,7 @@ public enum Environment {
     staging("http", "develop.carb.onl", true, "http", "develop.carboni.uk", true),
     live("http", "beta.ons.gov.uk", false, "http", "publishing.beta.ons.gov.uk", true),
     sandpit("http", "sandpit.carb.onl", false, "http", "publishing.sandpit.carboni.uk", true);
+    public static String registryRepo = "carboni";
 
     // Cross-environment URLs:
     private static URL registry;
@@ -34,10 +35,10 @@ public enum Environment {
     private static String registryProtocol = "https";
     private static String jenkinsProtocol = "http";
     private static String nexusProtocol = "http";
-    private static String registryDomain = "carboni.io";
+    private static String registryDomain = "hub.docker.com";
     private static String jenkinsDomain = "jenkins.carboni.io";
     private static String nexusDomain = "nexus.carboni.io";
-    private static boolean registryRequiresCredentials = true;
+    private static boolean registryRequiresCredentials = false;
     private static boolean jenkinsRequiresCredentials = true;
     private static boolean nexusRequiresCredentials = false;
 
