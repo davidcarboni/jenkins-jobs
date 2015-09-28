@@ -11,11 +11,11 @@ import java.net.URL;
  */
 public enum Environment {
 
-    develop("http", "develop.carb.onl", true, "http", "develop.carboni.uk", true),
-    staging("http", "develop.carb.onl", true, "http", "develop.carboni.uk", true),
-    live("http", "beta.ons.gov.uk", false, "http", "publishing.beta.ons.gov.uk", true),
-    sandpit("http", "sandpit.carb.onl", true, "http", "sandpit.carboni.uk", true);
-    public static String registryRepo = "carboni";
+    develop("http", "develop.lifeinteal.com", true, "http", "publishing.develop.lifeinteal.com", true),
+    staging("http", "staging.lifeinteal.com", true, "http", "publishing.staging.lifeinteal.com", true),
+    live("http", "lifeinteal.com", false, "http", "publishing.lifeinteal.com", true),
+    sandpit("http", "sandpit.lifeinteal.com", true, "http", "publishing.sandpit.lifeinteal.com", true);
+    public static String registryRepo = "onsdigital";
 
     // Cross-environment URLs:
     private static URL registry;
@@ -36,8 +36,8 @@ public enum Environment {
     private static String jenkinsProtocol = "http";
     private static String nexusProtocol = "http";
     private static String registryDomain = "hub.docker.com";
-    private static String jenkinsDomain = "jenkins.carboni.io";
-    private static String nexusDomain = "nexus.carboni.io";
+    private static String jenkinsDomain = "build.lifeinteal.com";
+    private static String nexusDomain = "nexus.lifeinteal.com";
     private static boolean registryRequiresCredentials = false;
     private static boolean jenkinsRequiresCredentials = true;
     private static boolean nexusRequiresCredentials = false;

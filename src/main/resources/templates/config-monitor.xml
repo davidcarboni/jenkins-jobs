@@ -64,7 +64,7 @@
     <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
       <teamDomain>onsbeta</teamDomain>
       <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
-      <buildServerUrl>http://jenkins.carboni.uk/</buildServerUrl>
+      <buildServerUrl>http://build.lifeinteal.com/</buildServerUrl>
       <room/>
     </jenkins.plugins.slack.SlackNotifier>
     </publishers>

@@ -16,7 +16,6 @@ public class Main {
     public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
         ContainerJobs.main(args);
         DeployJobs.main(args);
-        //LibraryJobs.main(args);
         ContainerNodeJobs.main(args);
         MonitorJobs.main(args);
         Jobs.main(args);
