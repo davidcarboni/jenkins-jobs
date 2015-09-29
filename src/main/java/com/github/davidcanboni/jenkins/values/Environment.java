@@ -27,8 +27,8 @@ public enum Environment {
     private URL publishing;
 
     // Credentials:
-    private static String username = System.getProperty("username", "bob");
-    private static String password = System.getProperty("password", "tree");
+    private static String username = System.getProperty("username", "dougal");
+    private static String password = System.getProperty("password", "ermintrude");
 
     // Cross-environment values:
     private static String publishingPath = "/florence/index.html";
