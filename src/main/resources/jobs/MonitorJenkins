@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?><project>
-  <actions/>
-  <description/>
-  <logRotator class="hudson.tasks.LogRotator">
-    <daysToKeep>7</daysToKeep>
-    <numToKeep>-1</numToKeep>
-    <artifactDaysToKeep>-1</artifactDaysToKeep>
-    <artifactNumToKeep>-1</artifactNumToKeep>
-  </logRotator>
-  <keepDependencies>false</keepDependencies>
-  <properties>
-    <hudson.model.ParametersDefinitionProperty>
-      <parameterDefinitions>
-        <hudson.model.StringParameterDefinition>
-          <name>url</name>
-          <description>The URL to monitor.</description>
-          <defaultValue>http://stats:Magic5yf&amp;Roundabout@jenkins.carboni.io</defaultValue>
-        </hudson.model.StringParameterDefinition>
-      </parameterDefinitions>
-    </hudson.model.ParametersDefinitionProperty>
+    <actions/>
+    <description/>
+    <logRotator class="hudson.tasks.LogRotator">
+        <daysToKeep>7</daysToKeep>
+        <numToKeep>-1</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+    </logRotator>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <hudson.model.ParametersDefinitionProperty>
+            <parameterDefinitions>
+                <hudson.model.StringParameterDefinition>
+                    <name>url</name>
+                    <description>The URL to monitor.</description>
+                    <defaultValue>http://stats:Magic5yf&amp;Roundabout@build.lifeinteal.com</defaultValue>
+                </hudson.model.StringParameterDefinition>
+            </parameterDefinitions>
+        </hudson.model.ParametersDefinitionProperty>
     <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
       <teamDomain/>
       <token/>
@@ -35,38 +35,38 @@
       <includeCustomMessage>false</includeCustomMessage>
       <customMessage/>
     </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
-  </properties>
-  <scm class="hudson.scm.NullSCM"/>
-  <canRoam>true</canRoam>
-  <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <triggers>
-    <hudson.triggers.TimerTrigger>
-      <spec>* * * * *</spec>
-    </hudson.triggers.TimerTrigger>
-  </triggers>
-  <concurrentBuild>false</concurrentBuild>
-  <builders>
-    <hudson.tasks.Shell>
-      <command>echo Pinging $url
+    </properties>
+    <scm class="hudson.scm.NullSCM"/>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers>
+        <hudson.triggers.TimerTrigger>
+            <spec>* * * * *</spec>
+        </hudson.triggers.TimerTrigger>
+    </triggers>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <hudson.tasks.Shell>
+            <command>echo Pinging $url
                 code=`curl -sL -w "%{http_code}\\n" "$url" -o /dev/null`
                 echo "Response code: $code"
                 if [ "x$code" = "x200" ]
                 then
-                    exit 0
+                exit 0
                 else
-                    exit 1
+                exit 1
                 fi</command>
-    </hudson.tasks.Shell>
-  </builders>
-  <publishers>
+        </hudson.tasks.Shell>
+    </builders>
+    <publishers>
     <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
       <teamDomain>onsbeta</teamDomain>
       <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
-      <buildServerUrl>http://jenkins.carboni.uk/</buildServerUrl>
+      <buildServerUrl>http://build.lifeinteal.com/</buildServerUrl>
       <room/>
     </jenkins.plugins.slack.SlackNotifier>
-  </publishers>
-  <buildWrappers/>
+    </publishers>
+    <buildWrappers/>
 </project>
