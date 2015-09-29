@@ -1,5 +1,6 @@
 package com.github.davidcanboni.jenkins.xml;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -37,8 +38,11 @@ public class Xml {
     public static Path toFile(Node n) throws IOException {
         try {
             Path output = Files.createTempFile(n.getNodeName(), "xml");
-            Writer writer = new OutputStreamWriter(Files.newOutputStream(output));
-            transformer().transform(new DOMSource(n), new StreamResult(writer));
+            String user = System.getProperty("username", "dougal");
+            String password = System.getProperty("password", "ermintrude");
+            try (Writer writer = new FilteredWriter(new OutputStreamWriter(Files.newOutputStream(output)), StringEscapeUtils.escapeHtml4(user + ":" + password))) {
+                transformer().transform(new DOMSource(n), new StreamResult(writer));
+            }
             return output;
         } catch (TransformerException e) {
             throw new RuntimeException("Error converting XML to String", e);
