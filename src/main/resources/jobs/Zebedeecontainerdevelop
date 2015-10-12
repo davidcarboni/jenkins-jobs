@@ -93,7 +93,7 @@
       <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
         <dockerRegistryEndpoint plugin="docker-commons@1.2">
           <url>https://index.docker.io/v1/</url>
-          <credentialsId>453e925a-4b00-49ca-b659-fe10254c19e0</credentialsId>
+          <credentialsId>d12212e4-b0f9-46eb-811e-a007579baba1</credentialsId>
         </dockerRegistryEndpoint>
         <image>onsdigital/zebedee</image>
         <tag>develop</tag>
