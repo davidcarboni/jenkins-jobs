@@ -47,7 +47,7 @@ public class DeployJobs {
         // Generate the additional nodes
         Node deployment = template.createElement("hudson.tasks.Shell");
         Node command = template.createElement("command");
-        Node text = template.createTextNode("ssh "+target+" ./deploy.sh " + environment.name());
+        Node text = template.createTextNode("ssh " + target + " ./deploy.sh " + environment.name());
 
         // Append nodes
         builders.appendChild(deployment);
@@ -60,7 +60,8 @@ public class DeployJobs {
         List<String> upstreamJobs = new ArrayList<>();
         // Trigger a deploy for a change in any component:
         for (GitRepo gitRepo : GitRepo.values()) {
-            upstreamJobs.add(ContainerJobs.jobName(gitRepo, environment));
+            if (gitRepo != GitRepo.zebedeeReader)
+                upstreamJobs.add(ContainerJobs.jobName(gitRepo, environment));
         }
         String list = StringUtils.join(upstreamJobs, ", ");
         Xml.setTextValue(template, xpathUpstreamJobs, list);
@@ -71,7 +72,7 @@ public class DeployJobs {
         List<String> upstreamJobs = new ArrayList<>();
         upstreamJobs.add(ContainerJobs.jobName(GitRepo.babbage, environment));
         // NB this needs to be Zebedee-Reader
-        upstreamJobs.add(ContainerJobs.jobName(GitRepo.zebedee, environment));
+        upstreamJobs.add(ContainerJobs.jobName(GitRepo.zebedeeReader, environment));
         upstreamJobs.add(ContainerJobs.jobName(GitRepo.thetrain, environment));
         String list = StringUtils.join(upstreamJobs, ", ");
         Xml.setTextValue(template, xpathUpstreamJobs, list);
@@ -80,8 +81,8 @@ public class DeployJobs {
 
     public static void create(Environment environment) throws IOException, URISyntaxException {
 
-            create(environment,  false);
-            create(environment,  true);
+        create(environment, false);
+        create(environment, true);
     }
 
     public static void create(Environment environment, boolean publishing) throws IOException, URISyntaxException {
