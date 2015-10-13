@@ -4,11 +4,11 @@
     <keepDependencies>false</keepDependencies>
     <properties>
         <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
-            <teamDomain>onsbeta</teamDomain>
-            <token>zPUZgYEZrhGigUiO3eEkwovG</token>
-            <room>#deployments</room>
+            <teamDomain/>
+            <token/>
+            <room/>
             <startNotification>false</startNotification>
-            <notifySuccess>true</notifySuccess>
+            <notifySuccess>false</notifySuccess>
             <notifyAborted>false</notifyAborted>
             <notifyNotBuilt>false</notifyNotBuilt>
             <notifyUnstable>false</notifyUnstable>
