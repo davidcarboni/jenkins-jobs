@@ -40,9 +40,6 @@
     </triggers>
     <concurrentBuild>false</concurrentBuild>
     <builders>
-        <hudson.tasks.Shell>
-            <command>ssh user@example.com ./deploy.sh environment</command>
-        </hudson.tasks.Shell>
     </builders>
     <publishers>
         <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">

@@ -9,6 +9,7 @@ import com.github.onsdigital.http.Http;
 import com.github.onsdigital.http.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -31,10 +32,28 @@ public class DeployJobs {
         return template;
     }
 
-    public static Document setCommand(Document template, String target, Environment environment) throws IOException, URISyntaxException {
-        String command = "ssh " + target + " ./deploy.sh " + environment.name();
-        Xml.setTextValue(template, xpathCommand, command);
+    public static Document addDeploymentTargets(Document template, String[] targets, Environment environment) throws IOException, URISyntaxException {
+
+        for (String target : targets) {
+            addDeploymentTarget(template, target, environment);
+        }
         return template;
+    }
+
+    private static void addDeploymentTarget(Document template, String target, Environment environment) {
+
+        Node builders = Xml.getNode(template, "/project/builders");
+
+        // Generate the additional nodes
+        Node deployment = template.createElement("hudson.tasks.Shell");
+        Node command = template.createElement("command");
+        Node text = template.createTextNode("ssh "+target+" ./deploy.sh " + environment.name());
+
+        // Append nodes
+        builders.appendChild(deployment);
+        deployment.appendChild(command);
+        command.appendChild(text);
+        builders.normalize();
     }
 
     public static Document setUpstreamProjectsPublishing(Document template, Environment environment) throws IOException, URISyntaxException {
@@ -43,7 +62,7 @@ public class DeployJobs {
         for (GitRepo gitRepo : GitRepo.values()) {
             upstreamJobs.add(ContainerJobs.jobName(gitRepo, environment));
         }
-        String list = StringUtils.join(upstreamJobs, " ");
+        String list = StringUtils.join(upstreamJobs, ", ");
         Xml.setTextValue(template, xpathUpstreamJobs, list);
         return template;
     }
@@ -54,50 +73,46 @@ public class DeployJobs {
         // NB this needs to be Zebedee-Reader
         upstreamJobs.add(ContainerJobs.jobName(GitRepo.zebedee, environment));
         upstreamJobs.add(ContainerJobs.jobName(GitRepo.thetrain, environment));
-        String list = StringUtils.join(upstreamJobs, " ");
+        String list = StringUtils.join(upstreamJobs, ", ");
         Xml.setTextValue(template, xpathUpstreamJobs, list);
         return template;
     }
 
     public static void create(Environment environment) throws IOException, URISyntaxException {
 
-        for (int i = 0; i < environment.websiteTargets.length; i++) {
-            create(environment, i, false);
-        }
-        for (int i = 0; i < environment.publishingTargets.length; i++) {
-            create(environment, i, true);
-        }
+            create(environment,  false);
+            create(environment,  true);
     }
 
-    public static void create(Environment environment, int node, boolean publishing) throws IOException, URISyntaxException {
+    public static void create(Environment environment, boolean publishing) throws IOException, URISyntaxException {
 
         try (Http http = new Http()) {
 
             http.addHeader("Content-Type", "application/xml");
             Document config = getTemplate();
             String jobName;
-            String target;
+            String[] target;
             if (publishing) {
                 setUpstreamProjectsPublishing(config, environment);
-                jobName = jobNamePublishing(environment, node);
-                target = environment.publishingTargets[node];
+                jobName = jobNamePublishing(environment);
+                target = environment.publishingTargets;
             } else {
-                setUpstreamProjectsPublishing(config, environment);
-                jobName = jobNameWebsite(environment, node);
-                target = environment.websiteTargets[node];
+                setUpstreamProjectsWebsite(config, environment);
+                jobName = jobNameWebsite(environment);
+                target = environment.websiteTargets;
             }
-            setCommand(config, target, environment);
+            addDeploymentTargets(config, target, environment);
 
             if (!Jobs.exists(jobName)) {
 
                 System.out.println("Creating " + jobName);
-                //create(jobName, config, http);
+                create(jobName, config, http);
 
             } else {
 
                 System.out.println("Updating  " + jobName);
                 Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
-                //update(jobName, config, http, endpoint);
+                update(jobName, config, http, endpoint);
 
             }
 
@@ -126,12 +141,12 @@ public class DeployJobs {
     }
 
 
-    public static String jobNameWebsite(Environment environment, int node) {
-        return "Deploy website (" + environment.name() + " " + (node + 1) + ")";
+    public static String jobNameWebsite(Environment environment) {
+        return "Deploy website (" + environment.name() + ")";
     }
 
-    public static String jobNamePublishing(Environment environment, int node) {
-        return "Deploy publishing (" + environment.name() + " " + (node + 1) + ")";
+    public static String jobNamePublishing(Environment environment) {
+        return "Deploy publishing (" + environment.name() + ")";
     }
 
 

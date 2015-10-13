@@ -58,12 +58,8 @@ public class ContainerJobs {
 
     private static void setDownstreamDeployJobs(Environment environment, Document template) throws IOException {
         List<String> jobNames = new ArrayList<>();
-        for (int i = 0; i < environment.websiteTargets.length; i++) {
-            jobNames.add(DeployJobs.jobNameWebsite(environment, i));
-        }
-        for (int i = 0; i < environment.publishingTargets.length; i++) {
-            jobNames.add(DeployJobs.jobNamePublishing(environment, i));
-        }
+        jobNames.add(DeployJobs.jobNameWebsite(environment));
+        jobNames.add(DeployJobs.jobNamePublishing(environment));
         String childProjects = StringUtils.join(jobNames, ", ");
         Xml.setTextValue(template, "//publishers/hudson.tasks.BuildTrigger/childProjects", childProjects);
     }
