@@ -23,8 +23,8 @@ public class DeployJobs {
     static String xpathCommand = "//builders/hudson.tasks.Shell/command";
     static String xpathUpstreamJobs = "//triggers/jenkins.triggers.ReverseBuildTrigger/upstreamProjects";
 
-    static String[] websiteTargets = new String[]{"davidcarboni@10.13.26.2", "davidcarboni@10.13.26.3", "ubuntu@carb.onl"};
-    static String[] publishingTargets = new String[]{"davidcarboni@10.13.26.50", "ubuntu@carboni.uk"};
+    //static String[] websiteTargets = new String[]{"davidcarboni@10.13.26.2", "davidcarboni@10.13.26.3", "ubuntu@carb.onl"};
+    //static String[] publishingTargets = new String[]{"davidcarboni@10.13.26.50", "ubuntu@carboni.uk"};
 
     public static Document getTemplate() throws IOException, URISyntaxException {
         Document template = ResourceUtils.getXml(Templates.configDeploy);
@@ -61,47 +61,43 @@ public class DeployJobs {
 
     public static void create(Environment environment) throws IOException, URISyntaxException {
 
-        for (int i = 0; i < websiteTargets.length; i++) {
-            create(environment, websiteTargets[i + 1], i, false);
+        for (int i = 0; i < environment.websiteTargets.length; i++) {
+            create(environment, i, false);
         }
-        for (int i = 0; i < publishingTargets.length; i++) {
-            create(environment, publishingTargets[i + 1], i, true);
+        for (int i = 0; i < environment.publishingTargets.length; i++) {
+            create(environment, i, true);
         }
     }
 
-    public static void create(Environment environment, String target, int node, boolean publishing) throws IOException, URISyntaxException {
+    public static void create(Environment environment, int node, boolean publishing) throws IOException, URISyntaxException {
 
         try (Http http = new Http()) {
 
             http.addHeader("Content-Type", "application/xml");
             Document config = getTemplate();
             String jobName;
+            String target;
             if (publishing) {
                 setUpstreamProjectsPublishing(config, environment);
-                 jobName = jobNamePublishing(environment, node);
+                jobName = jobNamePublishing(environment, node);
+                target = environment.publishingTargets[node];
             } else {
                 setUpstreamProjectsPublishing(config, environment);
-                 jobName = jobNameWebsite(environment, node);
+                jobName = jobNameWebsite(environment, node);
+                target = environment.websiteTargets[node];
             }
             setCommand(config, target, environment);
 
             if (!Jobs.exists(jobName)) {
 
                 System.out.println("Creating " + jobName);
-
-                // Set the URL and create:
-                create(jobName, config, http);
+                //create(jobName, config, http);
 
             } else {
 
                 System.out.println("Updating  " + jobName);
                 Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
-                //Response<Path> xml = http.get(endpoint);
-                //if (xml.statusLine.getStatusCode() != 200)
-                //    throw new RuntimeException("Error reading configuration for job " + jobName + ": " + xml.statusLine.getReasonPhrase());
-
-                // Set the URL and update:
-                update(jobName, config, http, endpoint);
+                //update(jobName, config, http, endpoint);
 
             }
 
@@ -109,7 +105,6 @@ public class DeployJobs {
     }
 
     private static void create(String jobName, Document config, Http http) throws IOException {
-
 
         // Post the config XML to create the job
         Endpoint endpoint = Jobs.createItem.setParameter("name", jobName);

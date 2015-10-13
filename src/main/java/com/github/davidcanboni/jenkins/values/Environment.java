@@ -11,10 +11,10 @@ import java.net.URL;
  */
 public enum Environment {
 
-    develop("http", "develop.lifeinteal.com", true, "http", "publishing.develop.lifeinteal.com", true),
-    staging("http", "staging.lifeinteal.com", true, "http", "publishing.staging.lifeinteal.com", true),
-    live("http", "lifeinteal.com", false, "http", "publishing.lifeinteal.com", true),
-    sandpit("http", "sandpit.lifeinteal.com", true, "http", "publishing.sandpit.lifeinteal.com", true);
+    develop("http", "develop.lifeinteal.com", true, "http", "publishing.develop.lifeinteal.com", true, new String[]{"ubuntu@carb.onl"}, new String[]{"ubuntu@carboni.uk"}),
+    staging("http", "staging.lifeinteal.com", true, "http", "publishing.staging.lifeinteal.com", true, new String[]{"davidcarboni@10.13.26.2", "davidcarboni@10.13.26.3", "ubuntu@carb.onl"}, new String[]{"davidcarboni@10.13.26.50", "ubuntu@carboni.uk"}),
+    live("http", "lifeinteal.com", false, "http", "publishing.lifeinteal.com", true, new String[]{"davidcarboni@10.13.26.2", "davidcarboni@10.13.26.3", "ubuntu@carb.onl"}, new String[]{"davidcarboni@10.13.26.50", "ubuntu@carboni.uk"}),
+    sandpit("http", "sandpit.lifeinteal.com", true, "http", "publishing.sandpit.lifeinteal.com", true, new String[]{"ubuntu@carb.onl"}, new String[]{"ubuntu@carboni.uk"});
     public static String registryRepo = "onsdigital";
 
     // Cross-environment URLs:
@@ -47,6 +47,8 @@ public enum Environment {
     private String publishingProtocol;
     private String websiteDomain;
     private String publishingDomain;
+    public String[] websiteTargets;
+    public String[] publishingTargets;
     private boolean websiteRequiresCredentials;
     private boolean publishingRequiresCredentials;
 
@@ -100,11 +102,13 @@ public enum Environment {
         }
     }
 
-    Environment(String websiteProtocol, String websiteDomain, boolean websiteRequiresCredentials, String publishingProtocol, String publishingDomain, boolean publishingRequiresCredentials) {
+    Environment(String websiteProtocol, String websiteDomain, boolean websiteRequiresCredentials, String publishingProtocol, String publishingDomain, boolean publishingRequiresCredentials, String[] websiteTargets, String[] publishingTargets) {
         this.websiteProtocol = websiteProtocol;
         this.publishingProtocol = publishingProtocol;
         this.websiteDomain = websiteDomain;
         this.publishingDomain = publishingDomain;
+        this.websiteTargets = websiteTargets;
+        this.publishingTargets = publishingTargets;
         this.websiteRequiresCredentials = websiteRequiresCredentials;
         this.publishingRequiresCredentials = publishingRequiresCredentials;
     }

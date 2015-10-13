@@ -58,10 +58,10 @@ public class ContainerJobs {
 
     private static void setDownstreamDeployJobs(Environment environment, Document template) throws IOException {
         List<String> jobNames = new ArrayList<>();
-        for (int i = 0; i< DeployJobs.websiteTargets.length; i++) {
+        for (int i = 0; i < environment.websiteTargets.length; i++) {
             jobNames.add(DeployJobs.jobNameWebsite(environment, i));
         }
-        for (int i = 0; i< DeployJobs.publishingTargets.length; i++) {
+        for (int i = 0; i < environment.publishingTargets.length; i++) {
             jobNames.add(DeployJobs.jobNamePublishing(environment, i));
         }
         String childProjects = StringUtils.join(jobNames, ", ");
@@ -82,7 +82,7 @@ public class ContainerJobs {
         String image = gitRepo.name();
         String tag = environment.name() + "_previous";
         String imageName = registry + "/" + image;
-        Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/image", imageName+":"+environment.name());
+        Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/image", imageName + ":" + environment.name());
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/repository", imageName);
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/tag", tag);
     }
@@ -177,6 +177,7 @@ public class ContainerJobs {
 
     /**
      * TODO: registry credentials
+     *
      * @param args
      * @throws IOException
      * @throws URISyntaxException
