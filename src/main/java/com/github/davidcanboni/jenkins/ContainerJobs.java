@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.davidcanboni.jenkins.values.GitRepo.*;
+
 /**
  * Handles jobs in the Maven Build category.
  */
@@ -33,7 +35,9 @@ public class ContainerJobs {
         Document document = getTemplate();
         setGitUrl(gitRepo.url, document);
         setBranch(environment.name(), document);
-        setDownstreamDeployJobs(environment, document);
+        boolean website = gitRepo == babbage || gitRepo == zebedeeReader || gitRepo == thetrain;
+        boolean publishing = gitRepo == babbage || gitRepo == florence || gitRepo == GitRepo.zebedee || gitRepo == thetrain || gitRepo == brian;
+        setDownstreamDeployJobs(environment, document, website, publishing);
         if (gitRepo.nodeJs) {
             addNodeBuildStep(document, gitRepo);
         }
@@ -56,18 +60,19 @@ public class ContainerJobs {
         Xml.setTextValue(template, "//hudson.plugins.git.BranchSpec/name", "*/" + branch);
     }
 
-    private static void setDownstreamDeployJobs(Environment environment, Document template) throws IOException {
+    private static void setDownstreamDeployJobs(Environment environment, Document template, boolean website, boolean publishing) throws IOException {
         List<String> jobNames = new ArrayList<>();
-        jobNames.add(DeployJobs.jobNameWebsite(environment));
-        jobNames.add(DeployJobs.jobNamePublishing(environment));
+        if (website)
+            jobNames.add(DeployJobs.jobNameWebsite(environment));
+        if (publishing)
+            jobNames.add(DeployJobs.jobNamePublishing(environment));
         String childProjects = StringUtils.join(jobNames, ", ");
         Xml.setTextValue(template, "//publishers/hudson.tasks.BuildTrigger/childProjects", childProjects);
     }
-    //Deploy publishing (develop), Deploy website (develop)
 
     private static void removeImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
         String registry = Environment.registryRepo;
-        String image = gitRepo.name();
+        String image = gitRepo.toString();
         String tag = environment.name();
         String imageTag = registry + "/" + image + ":" + tag + "_previous";
         Xml.setTextValues(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand']/imageName", imageTag);
@@ -75,7 +80,7 @@ public class ContainerJobs {
 
     private static void tagImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
         String registry = Environment.registryRepo;
-        String image = gitRepo.name();
+        String image = gitRepo.toString();
         String tag = environment.name() + "_previous";
         String imageName = registry + "/" + image;
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand']/image", imageName + ":" + environment.name());
@@ -85,15 +90,19 @@ public class ContainerJobs {
 
     private static void createImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
         String registry = Environment.registryRepo;
-        String image = gitRepo.name();
+        String image = gitRepo.toString();
         String tag = environment.name();
         String imageTag = registry + "/" + image + ":" + tag;
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand']/imageTag", imageTag);
+        if (gitRepo.submodule) {
+            // Specially for Zebedee-Reader because it's a submodule:
+            Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand']/dockerFolder", "$WORKSPACE/" + gitRepo);
+        }
     }
 
     private static void pushImageCommand(GitRepo gitRepo, Environment environment, Document template) throws IOException {
         String registry = Environment.registryRepo;
-        String image = registry + "/" + gitRepo.name();
+        String image = registry + "/" + gitRepo.toString();
         String tag = environment.name();
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand']/image", image);
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand']/tag", tag);
@@ -107,7 +116,7 @@ public class ContainerJobs {
         Node task = template.createElement("hudson.tasks.Shell");
         Node command = template.createElement("command");
         Node text;
-        if (gitRepo == GitRepo.florence)
+        if (gitRepo == florence)
             text = template.createTextNode("npm install --prefix ./src/main/web/florence  --unsafe-perm");
         else
             text = template.createTextNode("npm install --prefix ./src/main/web  --unsafe-perm");
@@ -145,7 +154,7 @@ public class ContainerJobs {
     }
 
     public static String jobName(GitRepo gitRepo, Environment environment) {
-        return WordUtils.capitalize(gitRepo.name()) + " container (" + environment.name() + ")";
+        return WordUtils.capitalize(gitRepo.toString()) + " container (" + environment.name() + ")";
     }
 
     private static void create(String jobName, Document config, Http http) throws IOException {
@@ -182,11 +191,9 @@ public class ContainerJobs {
 
         // Loop through the matrix of combinations and set up the jobs:
         for (Environment environment : Environment.values()) {
-            create(GitRepo.babbage, environment);
-            create(GitRepo.florence, environment);
-            create(GitRepo.zebedee, environment);
-            create(GitRepo.brian, environment);
-            create(GitRepo.thetrain, environment);
+            for (GitRepo gitRepo : GitRepo.values()) {
+                create(gitRepo, environment);
+            }
         }
     }
 }
