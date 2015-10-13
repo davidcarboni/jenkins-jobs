@@ -24,9 +24,6 @@ public class DeployJobs {
     static String xpathCommand = "//builders/hudson.tasks.Shell/command";
     static String xpathUpstreamJobs = "//triggers/jenkins.triggers.ReverseBuildTrigger/upstreamProjects";
 
-    //static String[] websiteTargets = new String[]{"davidcarboni@10.13.26.2", "davidcarboni@10.13.26.3", "ubuntu@carb.onl"};
-    //static String[] publishingTargets = new String[]{"davidcarboni@10.13.26.50", "ubuntu@carboni.uk"};
-
     public static Document getTemplate() throws IOException, URISyntaxException {
         Document template = ResourceUtils.getXml(Templates.configDeploy);
         return template;
