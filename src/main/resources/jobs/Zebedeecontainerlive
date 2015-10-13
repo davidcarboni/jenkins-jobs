@@ -103,7 +103,7 @@
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>Deploy website (live), Deploy publishing (live)</childProjects>
+      <childProjects>Deploy publishing (live)</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>

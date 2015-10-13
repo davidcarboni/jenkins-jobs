@@ -103,7 +103,7 @@
   </builders>
   <publishers>
     <hudson.tasks.BuildTrigger>
-      <childProjects>Deploy website (sandpit), Deploy publishing (sandpit)</childProjects>
+      <childProjects>Deploy publishing (sandpit)</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>
