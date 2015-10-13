@@ -10,6 +10,7 @@ import com.github.onsdigital.http.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -31,6 +32,9 @@ public class ContainerJobs {
         setGitUrl(gitRepo.url, document);
         setBranch(environment.name(), document);
         setDownstreamDeployJobs(environment, document);
+        if (gitRepo.nodeJs) {
+            addNodeBuildStep(document, gitRepo);
+        }
         removeImageCommand(gitRepo, environment, document);
         tagImageCommand(gitRepo, environment, document);
         createImageCommand(gitRepo, environment, document);
@@ -89,6 +93,26 @@ public class ContainerJobs {
         String tag = environment.name();
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand']/image", image);
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand']/tag", tag);
+    }
+
+    private static void addNodeBuildStep(Document template, GitRepo gitRepo) {
+
+        Node builders = Xml.getNode(template, "/project/builders");
+
+        // Generate the additional nodes
+        Node task = template.createElement("hudson.tasks.Shell");
+        Node command = template.createElement("command");
+        Node text;
+        if (gitRepo == GitRepo.florence)
+            text = template.createTextNode("npm install --prefix ./src/main/web/florence  --unsafe-perm");
+        else
+            text = template.createTextNode("npm install --prefix ./src/main/web  --unsafe-perm");
+
+        // Append nodes
+        builders.insertBefore(task, builders.getFirstChild());
+        task.appendChild(command);
+        command.appendChild(text);
+        builders.normalize();
     }
 
 
@@ -153,6 +177,8 @@ public class ContainerJobs {
 
         // Loop through the matrix of combinations and set up the jobs:
         for (Environment environment : Environment.values()) {
+            create(GitRepo.babbage, environment);
+            create(GitRepo.florence, environment);
             create(GitRepo.zebedee, environment);
             create(GitRepo.brian, environment);
             create(GitRepo.thetrain, environment);
