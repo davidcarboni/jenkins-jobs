@@ -12,8 +12,8 @@ import java.net.URL;
 public enum Environment {
 
     develop("http", "develop.lifeinteal.com", true, "http", "publishing.develop.lifeinteal.com", true, new String[]{"ubuntu@carb.onl"}, new String[]{"ubuntu@carboni.uk"}),
-    staging("http", "staging.lifeinteal.com", true, "http", "publishing.staging.lifeinteal.com", true, new String[]{"davidcarboni@10.13.26.2", "davidcarboni@10.13.26.3", "ubuntu@carb.onl"}, new String[]{"davidcarboni@10.13.26.50", "ubuntu@carboni.uk"}),
-    live("http", "lifeinteal.com", false, "http", "publishing.lifeinteal.com", true, new String[]{"davidcarboni@10.13.26.2", "davidcarboni@10.13.26.3", "ubuntu@carb.onl"}, new String[]{"davidcarboni@10.13.26.50", "ubuntu@carboni.uk"}),
+    staging("http", "staging.lifeinteal.com", true, "http", "publishing.staging.lifeinteal.com", true, new String[]{"davidcarboni@web1", "davidcarboni@web2", "ubuntu@carb.onl"}, new String[]{"davidcarboni@publishing", "ubuntu@carboni.uk"}),
+    live("http", "lifeinteal.com", false, "http", "publishing.lifeinteal.com", true, new String[]{"davidcarboni@web1", "davidcarboni@web2", "ubuntu@carb.onl"}, new String[]{"davidcarboni@publishing", "ubuntu@carboni.uk"}),
     sandpit("http", "sandpit.lifeinteal.com", true, "http", "publishing.sandpit.lifeinteal.com", true, new String[]{"ubuntu@carb.onl"}, new String[]{"ubuntu@carboni.uk"});
     public static String registryRepo = "onsdigital";
 
