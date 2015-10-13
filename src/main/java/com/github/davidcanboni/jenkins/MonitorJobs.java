@@ -134,7 +134,7 @@ public class MonitorJobs {
         for (Map.Entry<String, URL> entry : monitors.entrySet()) {
             String name = entry.getKey();
             URL url = entry.getValue();
-            create(name, url);
+            //create(name, url);
         }
     }
 }
