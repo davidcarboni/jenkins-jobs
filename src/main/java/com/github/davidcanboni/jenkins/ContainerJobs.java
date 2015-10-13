@@ -15,6 +15,8 @@ import org.w3c.dom.Node;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles jobs in the Maven Build category.
@@ -55,7 +57,13 @@ public class ContainerJobs {
     }
 
     private static void setDownstreamDeployJobs(Environment environment, Document template) throws IOException {
-        String[] jobNames = new String[]{DeployJobs.jobNameWebsite(environment), DeployJobs.jobNamePublishing(environment)};
+        List<String> jobNames = new ArrayList<>();
+        for (int i = 0; i< DeployJobs.websiteTargets.length; i++) {
+            jobNames.add(DeployJobs.jobNameWebsite(environment, i));
+        }
+        for (int i = 0; i< DeployJobs.publishingTargets.length; i++) {
+            jobNames.add(DeployJobs.jobNamePublishing(environment, i));
+        }
         String childProjects = StringUtils.join(jobNames, ", ");
         Xml.setTextValue(template, "//publishers/hudson.tasks.BuildTrigger/childProjects", childProjects);
     }
