@@ -56,7 +56,6 @@ public class ContainerJobs {
     private static void gitCommitId(GitRepo gitRepo, Document template) {
         String value = Xml.getTextValue(template, xpathGitCommitId);
         value = value.replace("git_commit_id", gitRepo.toString()+"/git_commit_id");
-        System.out.println("Updating: "+value);
         Xml.setTextValue(template, xpathGitCommitId, value);
     }
 
