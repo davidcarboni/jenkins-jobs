@@ -29,7 +29,7 @@
     <triggers>
         <jenkins.triggers.ReverseBuildTrigger>
             <spec/>
-            <upstreamProjects>Babbage container (develop), Zebedee container (develop), Thetrain container (develop)</upstreamProjects>
+            <upstreamProjects>Babbage container (develop), Zebedee-reader container (develop), Thetrain container (develop)</upstreamProjects>
             <threshold>
                 <name>SUCCESS</name>
                 <ordinal>0</ordinal>
