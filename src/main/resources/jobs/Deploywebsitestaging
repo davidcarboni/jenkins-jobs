@@ -1,56 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?><project>
-  <actions/>
-  <description/>
-  <keepDependencies>false</keepDependencies>
-  <properties>
-    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
-      <teamDomain>onsbeta</teamDomain>
-      <token>zPUZgYEZrhGigUiO3eEkwovG</token>
-      <room>#deployments</room>
-      <startNotification>false</startNotification>
-      <notifySuccess>true</notifySuccess>
-      <notifyAborted>false</notifyAborted>
-      <notifyNotBuilt>false</notifyNotBuilt>
-      <notifyUnstable>false</notifyUnstable>
-      <notifyFailure>true</notifyFailure>
-      <notifyBackToNormal>false</notifyBackToNormal>
-      <notifyRepeatedFailure>false</notifyRepeatedFailure>
-      <includeTestSummary>false</includeTestSummary>
-      <showCommitList>false</showCommitList>
-      <includeCustomMessage>false</includeCustomMessage>
-      <customMessage/>
-    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
-  </properties>
-  <scm class="hudson.scm.NullSCM"/>
-  <canRoam>true</canRoam>
-  <disabled>true</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>true</blockBuildWhenUpstreamBuilding>
-  <triggers>
-    <jenkins.triggers.ReverseBuildTrigger>
-      <spec/>
-      <upstreamProjects>Babbage container (staging)</upstreamProjects>
-      <threshold>
-        <name>SUCCESS</name>
-        <ordinal>0</ordinal>
-        <color>BLUE</color>
-        <completeBuild>true</completeBuild>
-      </threshold>
-    </jenkins.triggers.ReverseBuildTrigger>
-  </triggers>
-  <concurrentBuild>false</concurrentBuild>
-  <builders>
+    <actions/>
+    <description/>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
+            <teamDomain/>
+            <token/>
+            <room/>
+            <startNotification>false</startNotification>
+            <notifySuccess>false</notifySuccess>
+            <notifyAborted>false</notifyAborted>
+            <notifyNotBuilt>false</notifyNotBuilt>
+            <notifyUnstable>false</notifyUnstable>
+            <notifyFailure>true</notifyFailure>
+            <notifyBackToNormal>false</notifyBackToNormal>
+            <notifyRepeatedFailure>false</notifyRepeatedFailure>
+            <includeTestSummary>false</includeTestSummary>
+            <showCommitList>false</showCommitList>
+            <includeCustomMessage>false</includeCustomMessage>
+            <customMessage/>
+        </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    </properties>
+    <scm class="hudson.scm.NullSCM"/>
+    <canRoam>true</canRoam>
+    <disabled>true</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>true</blockBuildWhenUpstreamBuilding>
+    <triggers>
+        <jenkins.triggers.ReverseBuildTrigger>
+            <spec/>
+            <upstreamProjects>Babbage container (staging), Zebedee container (staging), Thetrain container (staging)</upstreamProjects>
+            <threshold>
+                <name>SUCCESS</name>
+                <ordinal>0</ordinal>
+                <color>BLUE</color>
+                <completeBuild>true</completeBuild>
+            </threshold>
+        </jenkins.triggers.ReverseBuildTrigger>
+    </triggers>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
     <hudson.tasks.Shell>
-      <command>ssh ubuntu@carb.onl ./deploy.sh staging</command>
-    </hudson.tasks.Shell>
-  </builders>
-  <publishers>
-    <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
-      <teamDomain>onsbeta</teamDomain>
-      <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
-      <buildServerUrl>http://jenkins.carboni.uk/</buildServerUrl>
-      <room/>
-    </jenkins.plugins.slack.SlackNotifier>
-  </publishers>
-  <buildWrappers/>
+<command>ssh davidcarboni@web1 ./deploy.sh staging</command>
+</hudson.tasks.Shell>
+<hudson.tasks.Shell>
+<command>ssh davidcarboni@web2 ./deploy.sh staging</command>
+</hudson.tasks.Shell>
+<hudson.tasks.Shell>
+<command>ssh ubuntu@carb.onl ./deploy.sh staging</command>
+</hudson.tasks.Shell>
+</builders>
+    <publishers>
+        <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
+            <teamDomain>onsbeta</teamDomain>
+            <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
+            <buildServerUrl>http://build.lifeinteal.com/</buildServerUrl>
+            <room/>
+        </jenkins.plugins.slack.SlackNotifier>
+    </publishers>
+    <buildWrappers/>
 </project>
