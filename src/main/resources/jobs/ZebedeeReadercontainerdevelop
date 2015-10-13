@@ -50,7 +50,7 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>echo $GIT_COMMIT on branch $GIT_BRANCH at $GIT_URL &gt; git_commit_id</command>
+      <command>echo $GIT_COMMIT on branch $GIT_BRANCH at $GIT_URL &gt; zebedee-reader/git_commit_id</command>
     </hudson.tasks.Shell>
     <hudson.tasks.Maven>
       <targets>clean package dependency:copy-dependencies</targets>
