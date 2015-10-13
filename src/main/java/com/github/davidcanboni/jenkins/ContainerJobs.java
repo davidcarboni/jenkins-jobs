@@ -25,6 +25,8 @@ import static com.github.davidcanboni.jenkins.values.GitRepo.*;
  */
 public class ContainerJobs {
 
+    static String xpathGitCommitId = "//builders/hudson.tasks.Shell/command";
+
     public static Document forRepo(URL gitUrl) throws IOException {
         Document document = getTemplate();
         setGitUrl(gitUrl, document);
@@ -45,7 +47,17 @@ public class ContainerJobs {
         tagImageCommand(gitRepo, environment, document);
         createImageCommand(gitRepo, environment, document);
         pushImageCommand(gitRepo, environment, document);
+        if (gitRepo.submodule) {
+            gitCommitId(gitRepo, document);
+        }
         return document;
+    }
+
+    private static void gitCommitId(GitRepo gitRepo, Document template) {
+        String value = Xml.getTextValue(template, xpathGitCommitId);
+        value = value.replace("git_commit_id", gitRepo.toString()+"/git_commit_id");
+        System.out.println("Updating: "+value);
+        Xml.setTextValue(template, xpathGitCommitId, value);
     }
 
     private static Document getTemplate() throws IOException {
