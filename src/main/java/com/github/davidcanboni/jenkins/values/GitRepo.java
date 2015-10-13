@@ -10,19 +10,29 @@ public enum GitRepo {
 
     babbage("https://github.com/ONSdigital/babbage.git", true),
     florence("https://github.com/ONSdigital/florence.git", true),
-    zebedee("https://github.com/Carboni/zebedee.git", false),
-    brian("https://github.com/thomasridd/project-brian.git", false),
-    thetrain("https://github.com/Carboni/The-Train.git", false);
+    zebedee("https://github.com/Carboni/zebedee.git"),
+    zebedeeReader("https://github.com/Carboni/zebedee.git", false, true),
+    brian("https://github.com/thomasridd/project-brian.git"),
+    thetrain("https://github.com/Carboni/The-Train.git");
 
     public URL url;
     public boolean nodeJs;
+    public boolean submodule;
 
-    GitRepo(String url, boolean nodeJs) {
+    GitRepo(String url, boolean... parameters) {
         try {
             this.url = new URL(url);
-            this.nodeJs = nodeJs;
+            if (parameters.length>0) this.nodeJs = parameters[0];
+            if (parameters.length>1) this.submodule = parameters[1];
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error in url: " + url, e);
         }
+    }
+
+
+    @Override
+    public String toString() {
+        // Transform zebedeeReader into zebedee-reader:
+        return name().replace("R", "-r");
     }
 }
