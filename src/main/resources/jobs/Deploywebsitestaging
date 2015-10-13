@@ -44,9 +44,6 @@
 <command>ssh davidcarboni@web1 ./deploy.sh staging</command>
 </hudson.tasks.Shell>
 <hudson.tasks.Shell>
-<command>ssh davidcarboni@web2 ./deploy.sh staging</command>
-</hudson.tasks.Shell>
-<hudson.tasks.Shell>
 <command>ssh ubuntu@carb.onl ./deploy.sh staging</command>
 </hudson.tasks.Shell>
 </builders>
