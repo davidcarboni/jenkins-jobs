@@ -1,122 +1,123 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
-  <actions/>
-  <description/>
-  <keepDependencies>false</keepDependencies>
-  <properties>
-    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
-      <teamDomain/>
-      <token/>
-      <room/>
-      <startNotification>false</startNotification>
-      <notifySuccess>false</notifySuccess>
-      <notifyAborted>false</notifyAborted>
-      <notifyNotBuilt>false</notifyNotBuilt>
-      <notifyUnstable>false</notifyUnstable>
-      <notifyFailure>true</notifyFailure>
-      <notifyBackToNormal>false</notifyBackToNormal>
-      <notifyRepeatedFailure>false</notifyRepeatedFailure>
-      <includeTestSummary>false</includeTestSummary>
-      <showCommitList>false</showCommitList>
-      <includeCustomMessage>false</includeCustomMessage>
-      <customMessage/>
-    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
-  </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
-    <configVersion>2</configVersion>
-    <userRemoteConfigs>
-      <hudson.plugins.git.UserRemoteConfig>
-        <url>https://github.com/user/repo.git</url>
-      </hudson.plugins.git.UserRemoteConfig>
-    </userRemoteConfigs>
-    <branches>
-      <hudson.plugins.git.BranchSpec>
-        <name>*/develop</name>
-      </hudson.plugins.git.BranchSpec>
-    </branches>
-    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-    <submoduleCfg class="list"/>
-    <extensions/>
-  </scm>
-  <canRoam>true</canRoam>
-  <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <triggers>
-    <hudson.triggers.SCMTrigger>
-      <spec>* * * * *</spec>
-      <ignorePostCommitHooks>false</ignorePostCommitHooks>
-    </hudson.triggers.SCMTrigger>
-  </triggers>
-  <concurrentBuild>false</concurrentBuild>
-  <builders>
-    <hudson.tasks.Shell>
-      <command>echo $GIT_COMMIT on branch $GIT_BRANCH at $GIT_URL &gt; git_commit_id</command>
-    </hudson.tasks.Shell>
-    <hudson.tasks.Maven>
-      <targets>clean package dependency:copy-dependencies</targets>
-      <mavenName>(Default)</mavenName>
-      <usePrivateRepository>false</usePrivateRepository>
-      <settings class="jenkins.mvn.DefaultSettingsProvider"/>
-      <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
-    </hudson.tasks.Maven>
-    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
-      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
-        <imageName>repo/component:develop_previous</imageName>
-        <imageId/>
-        <ignoreIfNotFound>true</ignoreIfNotFound>
-      </dockerCmd>
-    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
-      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand">
-        <image>repo/component:develop</image>
-        <repository>repo/component</repository>
-        <tag>develop_previous</tag>
-        <ignoreIfNotFound>true</ignoreIfNotFound>
-      </dockerCmd>
-    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
-      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand">
-        <dockerFolder>$WORKSPACE</dockerFolder>
-        <imageTag>repo/component:develop</imageTag>
-        <noCache>false</noCache>
-        <rm>false</rm>
-      </dockerCmd>
-    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
-      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
-        <imageName>repo/component:develop_previous</imageName>
-        <imageId/>
-        <ignoreIfNotFound>true</ignoreIfNotFound>
-      </dockerCmd>
-    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-    <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
-      <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
-        <dockerRegistryEndpoint plugin="docker-commons@1.2">
-          <url>https://index.docker.io/v1/</url>
-          <credentialsId>d12212e4-b0f9-46eb-811e-a007579baba1</credentialsId>
-        </dockerRegistryEndpoint>
-        <image>repo/component</image>
-        <tag>develop</tag>
-        <registry/>
-      </dockerCmd>
-    </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-  </builders>
-  <publishers>
-    <hudson.tasks.BuildTrigger>
-      <childProjects>Deploy website (develop), Deploy publishing (develop)</childProjects>
-      <threshold>
-        <name>SUCCESS</name>
-        <ordinal>0</ordinal>
-        <color>BLUE</color>
-        <completeBuild>true</completeBuild>
-      </threshold>
-    </hudson.tasks.BuildTrigger>
-    <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
-      <teamDomain>onsbeta</teamDomain>
-      <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
-      <buildServerUrl>http://build.lifeinteal.com/</buildServerUrl>
-      <room/>
-    </jenkins.plugins.slack.SlackNotifier>
-  </publishers>
-  <buildWrappers/>
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <actions/>
+    <description/>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
+            <teamDomain/>
+            <token/>
+            <room/>
+            <startNotification>false</startNotification>
+            <notifySuccess>false</notifySuccess>
+            <notifyAborted>false</notifyAborted>
+            <notifyNotBuilt>false</notifyNotBuilt>
+            <notifyUnstable>false</notifyUnstable>
+            <notifyFailure>true</notifyFailure>
+            <notifyBackToNormal>false</notifyBackToNormal>
+            <notifyRepeatedFailure>false</notifyRepeatedFailure>
+            <includeTestSummary>false</includeTestSummary>
+            <showCommitList>false</showCommitList>
+            <includeCustomMessage>false</includeCustomMessage>
+            <customMessage/>
+        </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+    </properties>
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+                <url>https://github.com/user/repo.git</url>
+            </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+            <hudson.plugins.git.BranchSpec>
+                <name>*/develop</name>
+            </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="list"/>
+        <extensions/>
+    </scm>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers>
+        <hudson.triggers.SCMTrigger>
+            <spec>* * * * *</spec>
+            <ignorePostCommitHooks>false</ignorePostCommitHooks>
+        </hudson.triggers.SCMTrigger>
+    </triggers>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <hudson.tasks.Shell>
+            <command>echo $GIT_COMMIT on branch $GIT_BRANCH at $GIT_URL &gt; git_commit_id</command>
+        </hudson.tasks.Shell>
+        <hudson.tasks.Maven>
+            <targets>clean package dependency:copy-dependencies</targets>
+            <mavenName>(Default)</mavenName>
+            <usePrivateRepository>false</usePrivateRepository>
+            <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+            <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+        </hudson.tasks.Maven>
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+            <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
+                <imageName>repo/component:develop_previous</imageName>
+                <imageId/>
+                <ignoreIfNotFound>true</ignoreIfNotFound>
+            </dockerCmd>
+        </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+            <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand">
+                <image>repo/component:develop</image>
+                <repository>repo/component</repository>
+                <tag>develop_previous</tag>
+                <ignoreIfNotFound>true</ignoreIfNotFound>
+            </dockerCmd>
+        </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+            <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand">
+                <dockerFolder>$WORKSPACE</dockerFolder>
+                <imageTag>repo/component:develop</imageTag>
+                <noCache>false</noCache>
+                <rm>false</rm>
+            </dockerCmd>
+        </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+            <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
+                <imageName>repo/component:develop_previous</imageName>
+                <imageId/>
+                <ignoreIfNotFound>true</ignoreIfNotFound>
+            </dockerCmd>
+        </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+            <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
+                <dockerRegistryEndpoint plugin="docker-commons@1.2">
+                    <url>https://index.docker.io/v1/</url>
+                    <credentialsId>d12212e4-b0f9-46eb-811e-a007579baba1</credentialsId>
+                </dockerRegistryEndpoint>
+                <image>repo/component</image>
+                <tag>develop</tag>
+                <registry/>
+            </dockerCmd>
+        </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
+    </builders>
+    <publishers>
+        <hudson.tasks.BuildTrigger>
+            <childProjects>Deploy website (develop), Deploy publishing (develop)</childProjects>
+            <threshold>
+                <name>SUCCESS</name>
+                <ordinal>0</ordinal>
+                <color>BLUE</color>
+                <completeBuild>true</completeBuild>
+            </threshold>
+        </hudson.tasks.BuildTrigger>
+        <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
+            <teamDomain>onsbeta</teamDomain>
+            <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
+            <buildServerUrl>http://build.lifeinteal.com/</buildServerUrl>
+            <room/>
+        </jenkins.plugins.slack.SlackNotifier>
+    </publishers>
+    <buildWrappers/>
 </project>

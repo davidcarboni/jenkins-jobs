@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
     <actions/>
     <description/>
     <logRotator class="hudson.tasks.LogRotator">
@@ -18,23 +19,23 @@
                 </hudson.model.StringParameterDefinition>
             </parameterDefinitions>
         </hudson.model.ParametersDefinitionProperty>
-    <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
-      <teamDomain/>
-      <token/>
-      <room/>
-      <startNotification>false</startNotification>
-      <notifySuccess>false</notifySuccess>
-      <notifyAborted>false</notifyAborted>
-      <notifyNotBuilt>false</notifyNotBuilt>
-      <notifyUnstable>false</notifyUnstable>
-      <notifyFailure>true</notifyFailure>
-      <notifyBackToNormal>false</notifyBackToNormal>
-      <notifyRepeatedFailure>false</notifyRepeatedFailure>
-      <includeTestSummary>false</includeTestSummary>
-      <showCommitList>false</showCommitList>
-      <includeCustomMessage>false</includeCustomMessage>
-      <customMessage/>
-    </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
+        <jenkins.plugins.slack.SlackNotifier_-SlackJobProperty plugin="slack@1.8">
+            <teamDomain/>
+            <token/>
+            <room/>
+            <startNotification>false</startNotification>
+            <notifySuccess>false</notifySuccess>
+            <notifyAborted>false</notifyAborted>
+            <notifyNotBuilt>false</notifyNotBuilt>
+            <notifyUnstable>false</notifyUnstable>
+            <notifyFailure>true</notifyFailure>
+            <notifyBackToNormal>false</notifyBackToNormal>
+            <notifyRepeatedFailure>false</notifyRepeatedFailure>
+            <includeTestSummary>false</includeTestSummary>
+            <showCommitList>false</showCommitList>
+            <includeCustomMessage>false</includeCustomMessage>
+            <customMessage/>
+        </jenkins.plugins.slack.SlackNotifier_-SlackJobProperty>
     </properties>
     <scm class="hudson.scm.NullSCM"/>
     <canRoam>true</canRoam>
@@ -61,12 +62,12 @@
         </hudson.tasks.Shell>
     </builders>
     <publishers>
-    <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
-      <teamDomain>onsbeta</teamDomain>
-      <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
-      <buildServerUrl>http://build.lifeinteal.com/</buildServerUrl>
-      <room/>
-    </jenkins.plugins.slack.SlackNotifier>
+        <jenkins.plugins.slack.SlackNotifier plugin="slack@1.8">
+            <teamDomain>onsbeta</teamDomain>
+            <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
+            <buildServerUrl>http://build.lifeinteal.com/</buildServerUrl>
+            <room/>
+        </jenkins.plugins.slack.SlackNotifier>
     </publishers>
     <buildWrappers/>
 </project>
