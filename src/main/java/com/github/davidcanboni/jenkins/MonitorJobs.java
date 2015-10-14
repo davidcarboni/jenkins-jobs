@@ -13,7 +13,6 @@ import org.w3c.dom.Node;
 
 import javax.xml.xpath.*;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -26,13 +25,13 @@ public class MonitorJobs {
 
     static String xpath = "//hudson.model.StringParameterDefinition/defaultValue";
 
-    public static Document setUrl(URL url) throws IOException, URISyntaxException {
+    public static Document setUrl(URL url) throws IOException {
         Document document = ResourceUtils.getXml(Templates.configMonitor);
         setUrl(url, document);
         return document;
     }
 
-    public static void setUrl(URL url, Document document) throws IOException, URISyntaxException {
+    public static void setUrl(URL url, Document document) throws IOException {
         Xml.setTextValue(document, xpath, url.toString());
         XPath xPath = XPathFactory.newInstance().newXPath();
         Node node;
@@ -46,7 +45,7 @@ public class MonitorJobs {
     }
 
 
-    public static void create(String jobName, URL url) throws IOException, URISyntaxException {
+    public static void create(String jobName, URL url) throws IOException {
 
         String host = url.getHost() + url.getPath();
         String password = StringUtils.isNotBlank(url.getUserInfo()) ? " (with password)" : "";
@@ -118,7 +117,7 @@ public class MonitorJobs {
     }
 
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException {
         Map<String, URL> monitors = new HashMap<>();
 
         for (Environment environment : Environment.values()) {

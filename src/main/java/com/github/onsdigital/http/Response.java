@@ -19,6 +19,6 @@ public class Response<T> {
 
     @Override
     public String toString() {
-        return statusLine.getStatusCode() + " " + statusLine.getReasonPhrase() + (body==null?"\n[no body]": "\nbody:\n" + body) ;
+        return statusLine.getStatusCode() + " " + statusLine.getReasonPhrase() + (body == null ? "\n[no body]" : "\nbody:\n" + body);
     }
 }
