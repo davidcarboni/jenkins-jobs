@@ -12,9 +12,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Handles jobs in the Docker Library Images category.
@@ -24,12 +25,12 @@ public class DeployJobs {
     static String xpathCommand = "//builders/hudson.tasks.Shell/command";
     static String xpathUpstreamJobs = "//triggers/jenkins.triggers.ReverseBuildTrigger/upstreamProjects";
 
-    public static Document getTemplate() throws IOException, URISyntaxException {
-        Document template = ResourceUtils.getXml(Templates.configDeploy);
-        return template;
+    public static Document getTemplate() throws IOException {
+        Document document = ResourceUtils.getXml(Templates.configDeploy);
+        return document;
     }
 
-    public static Document addDeploymentTargets(Document template, String[] targets, Environment environment) throws IOException, URISyntaxException {
+    public static Document addDeploymentTargets(Document template, String[] targets, Environment environment) throws IOException {
 
         for (String target : targets) {
             addDeploymentTarget(template, target, environment);
@@ -53,7 +54,7 @@ public class DeployJobs {
         builders.normalize();
     }
 
-    public static Document setUpstreamProjectsPublishing(Document template, Environment environment) throws IOException, URISyntaxException {
+    public static Document setUpstreamProjectsPublishing(Document template, Environment environment) throws IOException {
         List<String> upstreamJobs = new ArrayList<>();
         // Trigger a deploy for a change in any component:
         for (GitRepo gitRepo : GitRepo.values()) {
@@ -65,7 +66,7 @@ public class DeployJobs {
         return template;
     }
 
-    public static Document setUpstreamProjectsWebsite(Document template, Environment environment) throws IOException, URISyntaxException {
+    public static Document setUpstreamProjectsWebsite(Document template, Environment environment) throws IOException {
         List<String> upstreamJobs = new ArrayList<>();
         upstreamJobs.add(ContainerJobs.jobName(GitRepo.babbage, environment));
         // NB this needs to be Zebedee-Reader
@@ -74,68 +75,6 @@ public class DeployJobs {
         String list = StringUtils.join(upstreamJobs, ", ");
         Xml.setTextValue(template, xpathUpstreamJobs, list);
         return template;
-    }
-
-    public static void create(Environment environment) throws IOException, URISyntaxException {
-
-        create(environment, false);
-        create(environment, true);
-    }
-
-    public static void create(Environment environment, boolean publishing) throws IOException, URISyntaxException {
-
-        try (Http http = new Http()) {
-
-            http.addHeader("Content-Type", "application/xml");
-            Document config = getTemplate();
-            String jobName;
-            String[] target;
-            if (publishing) {
-                setUpstreamProjectsPublishing(config, environment);
-                jobName = jobNamePublishing(environment);
-                target = environment.publishingTargets;
-            } else {
-                setUpstreamProjectsWebsite(config, environment);
-                jobName = jobNameWebsite(environment);
-                target = environment.websiteTargets;
-            }
-            addDeploymentTargets(config, target, environment);
-
-            if (!Jobs.exists(jobName)) {
-
-                System.out.println("Creating " + jobName);
-                create(jobName, config, http);
-
-            } else {
-
-                System.out.println("Updating  " + jobName);
-                Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
-                update(jobName, config, http, endpoint);
-
-            }
-
-        }
-    }
-
-    private static void create(String jobName, Document config, Http http) throws IOException {
-
-        // Post the config XML to create the job
-        Endpoint endpoint = Jobs.createItem.setParameter("name", jobName);
-        Response<String> create = http.post(endpoint, config, String.class);
-        if (create.statusLine.getStatusCode() != 200) {
-            System.out.println(create.body);
-            throw new RuntimeException("Error setting configuration for job " + jobName + ": " + create.statusLine.getReasonPhrase());
-        }
-    }
-
-    private static void update(String jobName, Document config, Http http, Endpoint endpoint) throws IOException {
-
-        // Post the config XML to update the job
-        Response<String> create = http.post(endpoint, config, String.class);
-        if (create.statusLine.getStatusCode() != 200) {
-            System.out.println(create.body);
-            throw new RuntimeException("Error setting configuration for job " + jobName + ": " + create.statusLine.getReasonPhrase());
-        }
     }
 
 
@@ -147,15 +86,49 @@ public class DeployJobs {
         return "Deploy publishing (" + environment.name() + ")";
     }
 
+    public static Map<String, List<String>> jobNames() {
+        Map<String, List<String>> result = new HashMap<>();
+        result.put("website", new ArrayList<String>());
+        result.put("publishing", new ArrayList<String>());
+
+        for (Environment environment : Environment.values()) {
+            result.get("website").add(jobNameWebsite(environment));
+            result.get("publishing").add(jobNamePublishing(environment));
+        }
+
+        return result;
+    }
+
+    static void generateConfig(Environment environment, boolean publishing) throws IOException {
+
+        Document config = getTemplate();
+        config.setXmlStandalone(true);
+        String jobName;
+        String[] target;
+        if (publishing) {
+            setUpstreamProjectsPublishing(config, environment);
+            jobName = jobNamePublishing(environment);
+            target = environment.publishingTargets;
+        } else {
+            setUpstreamProjectsWebsite(config, environment);
+            jobName = jobNameWebsite(environment);
+            target = environment.websiteTargets;
+        }
+        addDeploymentTargets(config, target, environment);
+
+        Jobs.generateConfig(jobName, config);
+    }
+
 
     /**
-     * @param args
+     * Generates the Jenkins XML configuration files for deployment jobs.
+     *
      * @throws IOException
-     * @throws URISyntaxException
      */
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void generateConfig() throws IOException {
         for (Environment environment : Environment.values()) {
-            create(environment);
+            generateConfig(environment, false);
+            generateConfig(environment, true);
         }
     }
 

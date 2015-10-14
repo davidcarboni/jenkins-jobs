@@ -3,6 +3,7 @@ package com.github.davidcanboni.jenkins;
 import com.github.davidcanboni.jenkins.json.Item;
 import com.github.davidcanboni.jenkins.json.Jenkins;
 import com.github.davidcanboni.jenkins.values.Environment;
+import com.github.davidcanboni.jenkins.values.GitRepo;
 import com.github.davidcanboni.jenkins.xml.Xml;
 import com.github.onsdigital.http.Endpoint;
 import com.github.onsdigital.http.Host;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -107,6 +109,60 @@ public class Jobs {
         // /job/$CurrentJobName/doRename?newName=$NewJobName
     }
 
+
+    public static void generateConfig(String jobName, Document config) throws IOException {
+
+        System.out.println("Creating job configuration " + jobName);
+        Path source = Xml.toFile(config);
+        Path target = Jobs.toPath(jobName);
+        Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    public static void uploadConfig(String jobName, Document config) throws IOException {
+
+        try (Http http = new Http()) {
+
+            http.addHeader("Content-Type", "application/xml");
+
+            if (!Jobs.exists(jobName)) {
+
+                System.out.println("Creating " + jobName);
+                Jobs.create(jobName, config, http);
+
+            } else {
+
+                System.out.println("Updating  " + jobName);
+                Jobs.update(jobName, config, http);
+
+            }
+
+        }
+    }
+
+
+    private static void create(String jobName, Document config, Http http) throws IOException {
+
+
+        // Post the config XML to create the job
+        Endpoint endpoint = Jobs.createItem.setParameter("name", jobName);
+        Response<String> response = http.post(endpoint, config, String.class);
+        if (response.statusLine.getStatusCode() != 200) {
+            System.out.println(response.body);
+            throw new RuntimeException("Error setting configuration for job " + jobName + ": " + response.statusLine.getReasonPhrase());
+        }
+    }
+
+    private static void update(String jobName, Document config, Http http) throws IOException {
+
+        // Post the config XML to update the job
+        Endpoint endpoint = new Endpoint(jenkins, "/job/" + jobName + "/config.xml");
+        Response<String> response = http.post(endpoint, config, String.class);
+        if (response.statusLine.getStatusCode() != 200) {
+            System.out.println(response.body);
+            throw new RuntimeException("Error setting configuration for job " + jobName + ": " + response.statusLine.getReasonPhrase());
+        }
+    }
+
     /**
      * <a href=
      * "http://stackoverflow.com/questions/1155107/is-there-a-cross-platform-java-method-to-remove-filename-special-chars/13293384#13293384"
@@ -124,6 +180,10 @@ public class Jobs {
             }
         }
         return result.toString();
+    }
+
+    public static Path toPath(String jobName) {
+        return Paths.get("src/main/resources/jobs/" + sanitise(jobName));
     }
 
 

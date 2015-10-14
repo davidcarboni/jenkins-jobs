@@ -22,8 +22,8 @@ public enum GitRepo {
     GitRepo(String url, boolean... parameters) {
         try {
             this.url = new URL(url);
-            if (parameters.length>0) this.nodeJs = parameters[0];
-            if (parameters.length>1) this.submodule = parameters[1];
+            if (parameters.length > 0) this.nodeJs = parameters[0];
+            if (parameters.length > 1) this.submodule = parameters[1];
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error in url: " + url, e);
         }

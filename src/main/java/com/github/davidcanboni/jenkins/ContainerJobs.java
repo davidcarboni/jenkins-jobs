@@ -15,6 +15,9 @@ import org.w3c.dom.Node;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +38,7 @@ public class ContainerJobs {
 
     public static Document forRepo(GitRepo gitRepo, Environment environment) throws IOException {
         Document document = getTemplate();
+        document.setXmlStandalone(true);
         setGitUrl(gitRepo.url, document);
         setBranch(environment.name(), document);
         boolean website = gitRepo == babbage || gitRepo == zebedeeReader || gitRepo == thetrain;
@@ -55,7 +59,7 @@ public class ContainerJobs {
 
     private static void gitCommitId(GitRepo gitRepo, Document template) {
         String value = Xml.getTextValue(template, xpathGitCommitId);
-        value = value.replace("git_commit_id", gitRepo.toString()+"/git_commit_id");
+        value = value.replace("git_commit_id", gitRepo.toString() + "/git_commit_id");
         Xml.setTextValue(template, xpathGitCommitId, value);
     }
 
@@ -139,71 +143,38 @@ public class ContainerJobs {
         builders.normalize();
     }
 
-
-    public static void create(GitRepo gitRepo, Environment environment) throws IOException, URISyntaxException {
-
-        try (Http http = new Http()) {
-
-            http.addHeader("Content-Type", "application/xml");
-            String jobName = jobName(gitRepo, environment);
-            Document config = forRepo(gitRepo, environment);
-
-            if (!Jobs.exists(jobName)) {
-
-                System.out.println("Creating Maven job " + jobName);
-                create(jobName, config, http);
-
-            } else {
-
-                System.out.println("Updating Maven job " + jobName);
-                Endpoint endpoint = new Endpoint(Jobs.jenkins, "/job/" + jobName + "/config.xml");
-                update(jobName, config, http, endpoint);
-
-            }
-
-        }
-    }
-
     public static String jobName(GitRepo gitRepo, Environment environment) {
         return WordUtils.capitalize(gitRepo.toString()) + " container (" + environment.name() + ")";
     }
 
-    private static void create(String jobName, Document config, Http http) throws IOException {
 
+    public static List<String> jobNames() {
+        List<String> result = new ArrayList<>();
 
-        // Post the config XML to create the job
-        Endpoint endpoint = Jobs.createItem.setParameter("name", jobName);
-        Response<String> response = http.post(endpoint, config, String.class);
-        if (response.statusLine.getStatusCode() != 200) {
-            System.out.println(response.body);
-            throw new RuntimeException("Error setting configuration for job " + jobName + ": " + response.statusLine.getReasonPhrase());
+        // Loop through the matrix of combinations:
+        for (Environment environment : Environment.values()) {
+            for (GitRepo gitRepo : GitRepo.values()) {
+                result.add(jobName(gitRepo, environment));
+            }
         }
-    }
 
-    private static void update(String jobName, Document config, Http http, Endpoint endpoint) throws IOException {
-
-        // Post the config XML to update the job
-        Response<String> response = http.post(endpoint, config, String.class);
-        if (response.statusLine.getStatusCode() != 200) {
-            System.out.println(response.body);
-            throw new RuntimeException("Error setting configuration for job " + jobName + ": " + response.statusLine.getReasonPhrase());
-        }
+        return result;
     }
 
 
     /**
-     * TODO: registry credentials
+     * Generates the Jenkins XML configuration files for container image build jobs.
      *
-     * @param args
      * @throws IOException
-     * @throws URISyntaxException
      */
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void generateConfig() throws IOException, InterruptedException {
 
         // Loop through the matrix of combinations and set up the jobs:
         for (Environment environment : Environment.values()) {
             for (GitRepo gitRepo : GitRepo.values()) {
-                create(gitRepo, environment);
+                String jobName = jobName(gitRepo, environment);
+                Document config = forRepo(gitRepo, environment);
+                Jobs.generateConfig(jobName, config);
             }
         }
     }
