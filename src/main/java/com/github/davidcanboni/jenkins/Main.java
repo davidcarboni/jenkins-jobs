@@ -1,18 +1,13 @@
 package com.github.davidcanboni.jenkins;
 
 import com.github.davidcanboni.jenkins.json.Item;
-import com.github.davidcanboni.jenkins.values.Environment;
-import com.github.davidcanboni.jenkins.values.GitRepo;
 import com.github.davidcanboni.jenkins.xml.Xml;
-import com.github.onsdigital.http.Endpoint;
-import com.github.onsdigital.http.Http;
-import com.github.onsdigital.http.Response;
 import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +31,6 @@ public class Main {
     static void generateConfigurations() throws InterruptedException, IOException {
         ContainerJobs.generateConfig();
         DeployJobs.generateConfig();
-        //MonitorJobs.generateConfig();
     }
 
     static void uploadConfigurations() throws InterruptedException {
@@ -71,14 +65,52 @@ public class Main {
         executorService.awaitTermination(30, TimeUnit.SECONDS);
     }
 
+
+
+    /**
+     * Downloads the config.xml of each job on the Jenkins server.
+     *
+     * @throws IOException If an error occurs in downloading the job configuration.
+     */
+    public static void downloadConfigurations() throws IOException, InterruptedException {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+
+        List<Item> jobs = Jobs.listJobs();
+
+        for (Item job : jobs) {
+            final Item referenceJob = job;
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        Document config = Jobs.getConfig(referenceJob.name);
+                        Path path = Jobs.toPath(referenceJob.name);
+                        Path temp = Xml.toFile(config);
+                        Files.move(temp, path, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Error for " + referenceJob, e);
+                    }
+                }
+            });
+
+        }
+
+        executorService.shutdown();
+        executorService.awaitTermination(30, TimeUnit.SECONDS);
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        // Configure jobs:
+        // Generate job configurations:
         generateConfigurations();
-        //uploadConfigurations();
+
+        // Update the jobs on Jenkins:
+        uploadConfigurations();
 
         // Re-download the configurations to get them
         // in the exact format Jenkins updates them to:
-        Jobs.main(args);
+        downloadConfigurations();
     }
 }

@@ -3,7 +3,6 @@ package com.github.davidcanboni.jenkins;
 import com.github.davidcanboni.jenkins.json.Item;
 import com.github.davidcanboni.jenkins.json.Jenkins;
 import com.github.davidcanboni.jenkins.values.Environment;
-import com.github.davidcanboni.jenkins.values.GitRepo;
 import com.github.davidcanboni.jenkins.xml.Xml;
 import com.github.onsdigital.http.Endpoint;
 import com.github.onsdigital.http.Host;
@@ -19,9 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by david on 08/07/2015.
@@ -186,40 +182,4 @@ public class Jobs {
         return Paths.get("src/main/resources/jobs/" + sanitise(jobName));
     }
 
-
-    /**
-     * Downloads the config.xml of each job on the Jenkins server.
-     *
-     * @param args Not used.
-     * @throws IOException If an error occurs in downloading the job configuration.
-     */
-    public static void main(String[] args) throws IOException, InterruptedException {
-
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
-
-        List<Item> jobs = listJobs();
-
-        for (Item job : jobs) {
-            final Item referenceJob = job;
-            executorService.submit(new Runnable() {
-                @Override
-                public void run() {
-
-                    try {
-                        Document config = getConfig(referenceJob.name);
-                        Path path = Paths.get("src/main/resources/jobs/" + sanitise(referenceJob.name));
-                        Path temp = Xml.toFile(config);
-                        if (Files.exists(path)) Files.delete(path);
-                        Files.move(temp, path);
-                    } catch (IOException e) {
-                        throw new RuntimeException("Error for " + referenceJob, e);
-                    }
-                }
-            });
-
-        }
-
-        executorService.shutdown();
-        executorService.awaitTermination(30, TimeUnit.SECONDS);
-    }
 }
