@@ -50,7 +50,7 @@
     <concurrentBuild>false</concurrentBuild>
     <builders>
 <hudson.tasks.Shell>
-<command>npm install --prefix ./src/main/web  --unsafe-perm</command>
+<command>npm install --branch=staging --prefix ./src/main/web  --unsafe-perm</command>
 </hudson.tasks.Shell>
         <hudson.tasks.Shell>
             <command>echo $GIT_COMMIT on branch $GIT_BRANCH at $GIT_URL &gt; git_commit_id</command>

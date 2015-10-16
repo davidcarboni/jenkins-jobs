@@ -4,20 +4,13 @@ import com.github.davidcanboni.jenkins.values.Environment;
 import com.github.davidcanboni.jenkins.values.GitRepo;
 import com.github.davidcanboni.jenkins.xml.Xml;
 import com.github.davidcarboni.ResourceUtils;
-import com.github.onsdigital.http.Endpoint;
-import com.github.onsdigital.http.Http;
-import com.github.onsdigital.http.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +38,7 @@ public class ContainerJobs {
         boolean publishing = gitRepo == babbage || gitRepo == florence || gitRepo == GitRepo.zebedee || gitRepo == thetrain || gitRepo == brian;
         setDownstreamDeployJobs(environment, document, website, publishing);
         if (gitRepo.nodeJs) {
-            addNodeBuildStep(document, gitRepo);
+            addNodeBuildStep(document, gitRepo, environment);
         }
         removeImageCommand(gitRepo, environment, document);
         tagImageCommand(gitRepo, environment, document);
@@ -123,7 +116,7 @@ public class ContainerJobs {
         Xml.setTextValue(template, "//dockerCmd[@class='org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand']/tag", tag);
     }
 
-    private static void addNodeBuildStep(Document template, GitRepo gitRepo) {
+    private static void addNodeBuildStep(Document template, GitRepo gitRepo, Environment environment) {
 
         Node builders = Xml.getNode(template, "/project/builders");
 
@@ -132,9 +125,9 @@ public class ContainerJobs {
         Node command = template.createElement("command");
         Node text;
         if (gitRepo == florence)
-            text = template.createTextNode("npm install --prefix ./src/main/web/florence  --unsafe-perm");
+            text = template.createTextNode("npm install --branch=" + environment.name() + " --prefix ./src/main/web/florence  --unsafe-perm");
         else
-            text = template.createTextNode("npm install --prefix ./src/main/web  --unsafe-perm");
+            text = template.createTextNode("npm install --branch=" + environment.name() + " --prefix ./src/main/web  --unsafe-perm");
 
         // Append nodes
         builders.insertBefore(task, builders.getFirstChild());
