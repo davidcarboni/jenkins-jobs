@@ -62,14 +62,14 @@
             <settings class="jenkins.mvn.DefaultSettingsProvider"/>
             <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
         </hudson.tasks.Maven>
-        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.31">
             <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
                 <imageName>onsdigital/florence:staging_previous</imageName>
                 <imageId/>
                 <ignoreIfNotFound>true</ignoreIfNotFound>
             </dockerCmd>
         </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.31">
             <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.TagImageCommand">
                 <image>onsdigital/florence:staging</image>
                 <repository>onsdigital/florence</repository>
@@ -77,7 +77,7 @@
                 <ignoreIfNotFound>true</ignoreIfNotFound>
             </dockerCmd>
         </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.31">
             <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.CreateImageCommand">
                 <dockerFolder>$WORKSPACE</dockerFolder>
                 <imageTag>onsdigital/florence:staging</imageTag>
@@ -85,14 +85,14 @@
                 <rm>false</rm>
             </dockerCmd>
         </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.31">
             <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.RemoveImageCommand">
                 <imageName>onsdigital/florence:staging_previous</imageName>
                 <imageId/>
                 <ignoreIfNotFound>true</ignoreIfNotFound>
             </dockerCmd>
         </org.jenkinsci.plugins.dockerbuildstep.DockerBuilder>
-        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.28-SNAPSHOT">
+        <org.jenkinsci.plugins.dockerbuildstep.DockerBuilder plugin="docker-build-step@1.31">
             <dockerCmd class="org.jenkinsci.plugins.dockerbuildstep.cmd.PushImageCommand">
                 <dockerRegistryEndpoint plugin="docker-commons@1.2">
                     <url>https://index.docker.io/v1/</url>
@@ -118,7 +118,7 @@
             <teamDomain>onsbeta</teamDomain>
             <authToken>zPUZgYEZrhGigUiO3eEkwovG</authToken>
             <buildServerUrl>http://build.lifeinteal.com/</buildServerUrl>
-            <room/>
+            <room>github</room>
         </jenkins.plugins.slack.SlackNotifier>
     </publishers>
     <buildWrappers/>
