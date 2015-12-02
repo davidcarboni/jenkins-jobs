@@ -12,7 +12,7 @@ public enum GitRepo {
     florence("https://github.com/ONSdigital/florence.git", true),
     zebedee("https://github.com/Carboni/zebedee.git"),
     zebedeeReader("https://github.com/Carboni/zebedee.git", false, true),
-    brian("https://github.com/thomasridd/project-brian.git"),
+    brian("https://github.com/ONSdigital/project-brian.git"),
     thetrain("https://github.com/Carboni/The-Train.git");
 
     public URL url;
